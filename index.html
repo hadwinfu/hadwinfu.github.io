@@ -366,91 +366,15 @@
 
       
         
-          
-            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Zookeeper 是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</p>
+          <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Zookeeper 是一个分布式协调服务的开源框架。主要用来解决分布式集群中应用系统的一致性问题。</p>
 <p>ZooKeeper 本质上是一个分布式的小文件存储系统。提供基于类似于文件系统的目录树方式的数据存储，并且可以对树中的节点进行有效管理。从而用来维护和监控你存储的数据的状态变化。通过监控这些数据状态的变化，从而可以达到基于数据的集群管理。</p>
-<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><ol>
-<li>全局数据一致：集群中每个服务器保存一份相同的数据副本，client 无论连接到哪个服务器，展示的数据都是一致的，这是最重要的特征；</li>
-<li>可靠性：如果消息被其中一台服务器接受，那么将被所有的服务器接受。</li>
-<li>顺序性：包括全局有序和偏序两种：全局有序是指如果在一台服务器上消息 a 在消息 b 前发布，则在所有 Server 上消息 a 都将在消息 b 前被发布；偏序是指如果一个消息 b 在消息 a 后被同一个发送者发布，a 必将排在 b 前面。</li>
-<li>数据更新原子性：一次数据更新要么成功（半数以上节点成功），要么失败，不存在中间状态；</li>
-<li>实时性：Zookeeper 保证客户端将在一个时间间隔范围内获得服务器的更新信息，或者服务器失效的信息。</li>
-</ol>
-<h3 id="集群角色"><a href="#集群角色" class="headerlink" title="集群角色"></a>集群角色</h3><p><img src="https://s2.loli.net/2022/04/01/awdFjTQveZ2J3NM.png" alt="zkarch.png"></p>
-<ul>
-<li><strong>Leader</strong>:<br>Zookeeper 集群工作的核心<br>事务请求（写操作）的唯一调度和处理者，保证集群事务处理的顺序性；<br>集群内部各个服务器的调度者。<br>对于 <code>create</code>，<code>setData</code>，<code>delete</code> 等有写操作的请求，则需要统一转发给leader 处理，leader 需要决定编号、执行操作，这个过程称为一个事务。</li>
-<li><strong>Follower</strong>:<br>处理客户端非事务（读操作）请求，转发事务请求给 Leader；<br>参与集群 Leader 选举投票。<br>此外，针对访问量比较大的 zookeeper 集群，还可新增观察者角色。</li>
-<li><strong>Observer</strong>:<br>观察者角色，观察 Zookeeper 集群的最新状态变化并将这些状态同步过来，其对于非事务请求可以进行独立处理，对于事务请求，则会转发给 Leader服务器进行处理。<br>不会参与任何形式的投票只提供非事务服务，通常用于在不影响集群事务处理能力的前提下提升集群的非事务处理能力。</li>
-</ul>
-<h3 id="集群搭建"><a href="#集群搭建" class="headerlink" title="集群搭建"></a>集群搭建</h3><p>Zookeeper 集群搭建指的是 ZooKeeper 分布式模式安装。通常由 2n+1 台 servers 组成。为了保证 Leader 选举（基于 Paxos 算法的实现）能过得到多数的支持，ZooKeeper 集群的数量一般为奇数。</p>
-<p>Zookeeper 运行需要 java 环境，所以需要提前安装 jdk。对于安装 leader+follower 模式的集群，大致过程如下：</p>
-<ol>
-<li>配置主机名称到 IP 地址映射配置</li>
-<li>修改 ZooKeeper 配置文件</li>
-<li>远程复制分发安装文件</li>
-<li>设置 myid</li>
-<li>启动 ZooKeeper 集群</li>
-</ol>
-<p>如果要想使用 Observer 模式，可在对应节点的配置文件添加如下配置：<br><code>peerType=observer</code><br>其次，必须在配置文件指定哪些节点被指定为 Observer，如：<br><code>server.1:node1:2181:3181:observer</code></p>
-<h2 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h2><p>ZooKeeper 的数据模型，在结构上和标准文件系统的非常相似，拥有一个层次的命名空间，都是采用树形层次结构，ZooKeeper 树中的每个节点被称为 Znode 。和文件系统的目录树一样，ZooKeeper 树中的每个节点可以拥有子节点。<br>但也有不同之处：</p>
-<ol>
-<li>Znode 兼具文件和目录两种特点。既像文件一样维护着数据、元信息、ACL、时间戳等数据结构，又像目录一样可以作为路径标识的一部分，并可以具有子 Znode。用户对 Znode 具有增、删、改、查等操作（权限允许的情况下）。</li>
-<li>Znode 具有原子性操作，读操作将获取与节点相关的所有数据，写操作也将替换掉节点的所有数据。另外，每一个节点都拥有自己的 ACL(访问控制列表)，这个列表规定了用户的权限，即限定了特定用户对目标节点可以执行的操作。</li>
-<li>Znode 存储数据大小有限制。ZooKeeper 虽然可以关联一些数据，但并没有被设计为常规的数据库或者大数据存储，相反的是，它用来管理调度数据，比如分布式应用中的配置文件信息、状态信息、汇集位置等等。这些数据的共同特性就是它们都是很小的数据，通常以 KB 为大小单位。ZooKeeper 的服务器和客户端都被设计为严格检查并限制每个 Znode 的数据大小至多 1M，当时常规使用中应该远小于此值。</li>
-<li>Znode 通过路径引用，如同 Unix 中的文件路径。路径必须是绝对的，因此他们必须由斜杠字符来开头。除此以外，他们必须是唯一的，也就是说每一个路径只有一个表示，因此这些路径不能改变。在 ZooKeeper 中，路径由Unicode 字符串组成，并且有一些限制。字符串”&#x2F;zookeeper”用以保存管理信息，比如关键配额信息。</li>
-</ol>
-<h3 id="Znode数据结构图示"><a href="#Znode数据结构图示" class="headerlink" title="Znode数据结构图示"></a>Znode数据结构图示</h3><p><img src="https://s2.loli.net/2022/04/01/latrsj6NhJgU7kP.jpg" alt="zknamespace.jpg"></p>
-<p>图中的每个节点称为一个 Znode。 每个 Znode 由 3 部分组成:</p>
-<ol>
-<li><code>stat</code>：此为状态信息, 描述该 Znode 的版本, 权限等信息</li>
-<li><code>data</code>：与该 Znode 关联的数据</li>
-<li><code>children</code>：该 Znode 下的子节点</li>
-</ol>
-<h3 id="节点类型"><a href="#节点类型" class="headerlink" title="节点类型"></a>节点类型</h3><p>Znode 有两种，分别为临时节点和永久节点。节点的类型在创建时即被确定，并且不能改变。</p>
-<ul>
-<li>临时节点：该节点的生命周期依赖于创建它们的会话。一旦会话结束，临时节点将被自动删除，当然可以也可以手动删除。临时节点不允许拥有子节点。</li>
-<li>永久节点：该节点的生命周期不依赖于会话，并且只有在客户端显示执行删除操作的时候，他们才能被删除。</li>
-</ul>
-<p>Znode 还有一个序列化的特性，如果创建的时候指定的话，该 Znode 的名字后面会自动追加一个不断增加的序列号。序列号对于此节点的父节点来说是唯一的，这样便会记录每个子节点创建的先后顺序。它的格式为<code>%10d</code>(10 位数字，没有数值的数位用 0 补充，例如“0000000001”)。</p>
-<p>因此，一共有四种节点类型，分别为：</p>
-<ul>
-<li>PERSISTENT：永久节点</li>
-<li>EPHEMERAL：临时节点</li>
-<li>PERSISTENT_SEQUENTIAL：永久节点、序列化</li>
-<li>EPHEMERAL_SEQUENTIAL：临时节点、序列化</li>
-</ul>
-<h3 id="节点属性"><a href="#节点属性" class="headerlink" title="节点属性"></a>节点属性</h3><p>每个 znode 都包含了一系列的属性，通过命令 <code>get</code>，可以获得节点的属性。</p>
-<ul>
-<li><code>dataVersion</code>：数据版本号，每次对节点进行 <code>set</code> 操作，<code>dataVersion</code> 的值都会增加 1（即使设置的是相同的数据），可有效避免了数据更新时出现的先后顺序问题。</li>
-<li><code>cversion</code>：子节点的版本号。当 znode 的子节点有变化时，<code>cversion</code> 的值就会增加 1。</li>
-<li><code>cZxid</code>：Znode 创建的事务 id。</li>
-<li><code>mZxid</code>：Znode 被修改的事务 id，即每次对 znode 的修改都会更新 <code>mZxid</code>。<br>对于 zk 来说，每次的变化都会产生一个唯一的事务 id，zxid（ZooKeeperTransaction Id）。通过 zxid，可以确定更新操作的先后顺序。例如，如果 zxid1 小于 zxid2，说明 zxid1 操作先于 zxid2 发生，zxid 对于整个 zk 都是唯一的，即使操作的是不同的 znode。</li>
-<li><code>ctime</code>：节点创建时的时间戳.</li>
-<li><code>mtime</code>：节点最新一次更新发生时的时间戳.</li>
-<li><code>ephemeralOwner</code>:如果该节点为临时节点, <code>ephemeralOwner</code> 值表示与该节点绑定的 session id. 如果不是, <code>ephemeralOwner</code> 值为 0。在 client 和 server 通信之前,首先需要建立连接,该连接称为 session。连接建立后,如果发生连接超时、授权失败,或者显式关闭连接,连接便处于 CLOSED 状态, 此时 session 结束。</li>
-</ul>
-<h2 id="Watcher-监听机制"><a href="#Watcher-监听机制" class="headerlink" title="Watcher 监听机制"></a>Watcher 监听机制</h2><p>ZooKeeper 提供了分布式数据发布&#x2F;订阅功能，一个典型的发布&#x2F;订阅模型系统定义了一种一对多的订阅关系，能让多个订阅者同时监听某一个主题对象，当这个主题对象自身状态变化时，会通知所有订阅者，使他们能够做出相应的处理。</p>
-<p>ZooKeeper 中，引入了 Watcher 机制来实现这种分布式的通知功能。</p>
-<p>ZooKeeper 允许客户端向服务端注册一个 Watcher 监听，当服务端的一些事件触发了这个 Watcher，那么就会向指定客户端发送一个事件通知来实现分布式的通知功能。</p>
-<p>触发事件种类很多，如：节点创建，节点删除，节点改变，子节点改变等。</p>
-<p>总的来说可以概括 Watcher 为以下三个过程：客户端向服务端注册 Watcher、服务端事件发生触发 Watcher、客户端回调 Watcher 得到触发事件情况。</p>
-<p><strong>机制特点：</strong></p>
-<ul>
-<li><strong>一次性触发</strong><br>事件发生触发监听，一个 watcher event 就会被发送到设置监听的客户端，这种效果是一次性的，后续再次发生同样的事件，不会再次触发。</li>
-<li><strong>事件封装</strong><br>ZooKeeper 使用 WatchedEvent 对象来封装服务端事件并传递。<br>WatchedEvent 包含了每一个事件的三个基本属性：<br>通知状态（keeperState），事件类型（EventType）和节点路径（path）</li>
-<li><strong>event 异步发送</strong><br>watcher 的通知事件从服务端发送到客户端是异步的。</li>
-<li><strong>先注册再触发</strong><br>Zookeeper 中的 watch 机制，必须客户端先去服务端注册监听，这样事件发<br>送才会触发监听，通知给客户端。</li>
-</ul>
-<h2 id="典型应用"><a href="#典型应用" class="headerlink" title="典型应用"></a>典型应用</h2><h3 id="数据发布-x2F-订阅"><a href="#数据发布-x2F-订阅" class="headerlink" title="数据发布&#x2F;订阅"></a>数据发布&#x2F;订阅</h3><p>数据发布&#x2F;订阅系统即所谓的配置中心，也就是发布者将数据发布到 ZooKeeper 的一个节点上，提供订阅者进行数据订阅，从而实现动态更新数据的目的，实现配置信息的集中式管理和数据的动态更新。</p>
-<p>ZooKeeper 采用的是推拉相结合的方式：客户端向服务器注册自己需要关注的节点，一旦该节点的数据发生改变，那么服务端就会向相应的客户端发送 Watcher 事件通知，客户端接收到消息通知后，需要主动到服务端获取最新的数据。</p>
-<p><img src="https://s2.loli.net/2022/04/01/qPx9nHoI3TWuD2F.png" alt="zkwatcher.png"></p>
-<h3 id="提供集群选举"><a href="#提供集群选举" class="headerlink" title="提供集群选举"></a>提供集群选举</h3><p>在分布式环境下，不管是主从架构集群，还是主备架构集群，要求在服务的时候有且有一个正常的对外提供服务，我们称之为 master。</p>
-<p>当 master 出现故障之后，需要重新选举出的新的 master。保证服务的连续可用性。zookeeper 可以提供这样的功能服务。</p>
-<p><img src="https://s2.loli.net/2022/04/01/HxV2NWeizfYbu4d.png" alt="rm-ha-overview.png"></p>
-<h3 id="分布式锁"><a href="#分布式锁" class="headerlink" title="分布式锁"></a>分布式锁</h3><p>ZooKeeper 通过数据节点表示一个锁，例如 &#x2F;foo&#x2F;lock 节点就可以定义一个锁，所有客户端都会调用 create()接口，试图在 &#x2F;foo 下创建 lock 子节点，但是 ZooKeeper 的强一致性会保证所有客户端最终只有一个客户创建成功。也就可以认为获得了锁，其它线程 Watcher 监听子节点变化（等待释放锁，竞争获取资源）。</p>
-<p>此外也可以通过 znode 的序列化特性，给创建 znode 的客户端自动编号，从而实现所谓的顺序锁的功能。</p>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
