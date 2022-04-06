@@ -12,9 +12,9 @@ https://ovo.lol/%E6%97%A5%E8%AE%B0/%E5%85%A8%E6%96%B0%E5%BC%80%E5%A7%8B.html
 https://ovo.lol/categories/index.html
 https://ovo.lol/
 https://ovo.lol/tags/Hadoop/
+https://ovo.lol/tags/Hive/
 https://ovo.lol/tags/SQL/
 https://ovo.lol/tags/Zookeeper/
-https://ovo.lol/tags/Hive/
 https://ovo.lol/tags/Linux/
 https://ovo.lol/tags/Java/
 https://ovo.lol/tags/Mysql/
