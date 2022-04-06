@@ -92,7 +92,7 @@
 
 
 
-  <meta name="keywords" content="Zookeeper," />
+  <meta name="keywords" content="SQL," />
 
 
 
@@ -103,17 +103,17 @@
 
 
 
-<meta name="description" content="下载解压https:&#x2F;&#x2F;zookeeper.apache.org&#x2F;releases.html 从上面网址找到相应版本的bin压缩包，体积小的是源码！ 12345#下载wget https:&#x2F;&#x2F;www.apache.org&#x2F;dyn&#x2F;closer.lua&#x2F;zookeeper&#x2F;zookeeper-3.8.0&#x2F;apache-zookeeper-3.8.0-bin.tar.gz#解压tar zxvf apa">
+<meta name="description" content="空值(NULL)不能用 &#x3D;应该用 is null 或 is not null 使用 ifnull(col, default) 来处理空值  col : 列名 default : 默认值">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Zookeeper集群部署">
-<meta property="og:url" content="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Zookeeper%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2.html">
+<meta property="og:title" content="SQL学习笔记">
+<meta property="og:url" content="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html">
 <meta property="og:site_name" content="黑洞">
-<meta property="og:description" content="下载解压https:&#x2F;&#x2F;zookeeper.apache.org&#x2F;releases.html 从上面网址找到相应版本的bin压缩包，体积小的是源码！ 12345#下载wget https:&#x2F;&#x2F;www.apache.org&#x2F;dyn&#x2F;closer.lua&#x2F;zookeeper&#x2F;zookeeper-3.8.0&#x2F;apache-zookeeper-3.8.0-bin.tar.gz#解压tar zxvf apa">
+<meta property="og:description" content="空值(NULL)不能用 &#x3D;应该用 is null 或 is not null 使用 ifnull(col, default) 来处理空值  col : 列名 default : 默认值">
 <meta property="og:locale">
-<meta property="article:published_time" content="2022-03-30T01:22:36.000Z">
-<meta property="article:modified_time" content="2022-04-06T05:04:41.427Z">
+<meta property="article:published_time" content="2022-04-06T04:56:18.000Z">
+<meta property="article:modified_time" content="2022-04-06T04:57:33.662Z">
 <meta property="article:author" content="Mr Fu">
-<meta property="article:tag" content="Zookeeper">
+<meta property="article:tag" content="SQL">
 <meta name="twitter:card" content="summary">
 
 
@@ -144,13 +144,13 @@
 
 
 
-  <link rel="canonical" href="https://ovo.lol/大数据开发/Zookeeper集群部署.html"/>
+  <link rel="canonical" href="https://ovo.lol/大数据开发/SQL学习笔记.html"/>
 
 
 
 
 
-  <title>Zookeeper集群部署 | 黑洞</title>
+  <title>SQL学习笔记 | 黑洞</title>
   
 
 
@@ -267,7 +267,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Zookeeper%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2.html">
+    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -284,7 +284,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Zookeeper集群部署</h1>
+          <h1 class="post-title" itemprop="name headline">SQL学习笔记</h1>
         
 
         <div class="post-meta">
@@ -296,8 +296,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-03-30T09:22:36+08:00">
-                2022-03-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-04-06T12:56:18+08:00">
+                2022-04-06
               </time>
             
 
@@ -337,9 +337,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Zookeeper%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2.html#comments" itemprop="discussionUrl">
+                <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="大数据开发/Zookeeper集群部署.html" itemprop="commentCount"></span>
+                        data-disqus-identifier="大数据开发/SQL学习笔记.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -367,46 +367,125 @@
       
 
       
-        <h2 id="下载解压"><a href="#下载解压" class="headerlink" title="下载解压"></a>下载解压</h2><p><a target="_blank" rel="noopener" href="https://zookeeper.apache.org/releases.html">https://zookeeper.apache.org/releases.html</a></p>
-<p>从上面网址找到相应版本的bin压缩包，体积小的是源码！</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">下载</span></span><br><span class="line">wget https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.8.0/apache-zookeeper-3.8.0-bin.tar.gz</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">解压</span></span><br><span class="line">tar zxvf apache-zookeeper-3.8.0-bin.tar.gz</span><br></pre></td></tr></table></figure>
+        <h2 id="空值-NULL"><a href="#空值-NULL" class="headerlink" title="空值(NULL)"></a>空值(NULL)</h2><p>不能用 <code>=</code><br>应该用 <code>is null</code> 或 <code>is not null</code></p>
+<p>使用 <code>ifnull(col, default)</code> 来处理空值</p>
+<ul>
+<li><code>col</code> : 列名</li>
+<li><code>default</code> : 默认值</li>
+</ul>
 <span id="more"></span>
-<h2 id="配置Zookeeper"><a href="#配置Zookeeper" class="headerlink" title="配置Zookeeper"></a>配置Zookeeper</h2><p>先给文件夹改个名字</p>
-<p><code>mv zookeeper-3.8.0/ zookeeper</code></p>
-<p>修改配置文件</p>
+<h2 id="order-by-排序"><a href="#order-by-排序" class="headerlink" title="order by 排序"></a>order by 排序</h2><p>不仅能对数字大小排序 也可以根据字母顺序排序  </p>
 <ul>
-<li><p>zoo.cfg</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">zk默认加载的配置文件是zoo.cfg 因此需要针对模板进行修改，保证名字正确。</span></span><br><span class="line">cd zookeeper/conf</span><br><span class="line">mv zoo_sample.cfg zoo.cfg</span><br><span class="line"></span><br><span class="line">vi zoo.cfg</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">修改</span></span><br><span class="line">dataDir=/export/data/zkdata</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">文件最后添加 2888心跳端口 3888选举端口</span></span><br><span class="line">server.1=node1:2888:3888</span><br><span class="line">server.2=node2:2888:3888</span><br><span class="line">server.3=node3:2888:3888</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>myid</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">在每台机器的dataDir指定的目录下创建一个文件 名字叫做myid</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">myid里面的数字就是该台机器上server编号。server.N  N的数字就是编号</span></span><br><span class="line"></span><br><span class="line">mkdir -p /export/data/zkdata</span><br><span class="line">echo 1 &gt; /export/data/zkdata/myid</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>把安装包同步到其他节点上</p>
-  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /export/server</span><br><span class="line">scp -r zookeeper/ node2:$PWD</span><br><span class="line">scp -r zookeeper/ node3:$PWD</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>创建其他机器上myid和datadir目录</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">node2</span></span><br><span class="line">mkdir -p /export/data/zkdata</span><br><span class="line">echo 2 &gt; /export/data/zkdata/myid </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">node3</span></span><br><span class="line">mkdir -p /export/data/zkdata</span><br><span class="line">echo 3 &gt; /export/data/zkdata/myid </span><br></pre></td></tr></table></figure></li>
+<li><code>asc</code> 升序  </li>
+<li><code>desc</code> 降序</li>
 </ul>
-<p>至此，Zookeeper配置完毕。</p>
-<h2 id="启动Zookeeper"><a href="#启动Zookeeper" class="headerlink" title="启动Zookeeper"></a>启动Zookeeper</h2><ul>
-<li><p>每台机器上单独启动服务</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">在哪个目录执行启动命令 默认启动日志就生成当前路径下 叫做zookeeper.out</span></span><br><span class="line"></span><br><span class="line">/export/server/zookeeper/bin/zkServer.sh start</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">停止和查看状态</span></span><br><span class="line">stop|status</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">3台机器启动完毕之后 可以使用status查看角色是否正常。</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">还可以使用jps命令查看zk进程是否启动。</span></span><br><span class="line">[root@node3 ~]# jps</span><br><span class="line">2034 Jps</span><br><span class="line">1980 QuorumPeerMain  #看我，我就是zk的java进程</span><br></pre></td></tr></table></figure></li>
+<p>默认升序排列</p>
+<p><strong>在排序过程中NULL视为最小值</strong></p>
+<p>多字段排序时 优先级为左到右</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 先按年龄 再按身高</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> person <span class="keyword">order</span> <span class="keyword">by</span> age, height;</span><br></pre></td></tr></table></figure>
+
+<h2 id="limit"><a href="#limit" class="headerlink" title="limit"></a>limit</h2><ul>
+<li><code>limit N</code> : 返回 N 条记录  </li>
+<li><code>limit N, M</code> : 相当于 <code>limit M offset N</code> 从第 N 条记录开始 返回 M 条记录</li>
 </ul>
-<p>在node1机器上执行shell脚本，程序通过ssh免密登录到各个机器上帮助执行命令。</p>
+<h2 id="聚合函数"><a href="#聚合函数" class="headerlink" title="聚合函数"></a>聚合函数</h2><ul>
+<li><code>max()</code> 求列中最大值</li>
+<li><code>min()</code> 求列中最小值</li>
+<li><code>avg()</code> 求列的平均值</li>
+<li><code>count()</code> 求列的总行数<ul>
+<li><code>count(*)</code> 统计所有行数量，包括空值</li>
+<li><code>count(colname)</code> 统计colname这列，空值不计</li>
+<li><code>count(distinct colname)</code> 统计colname这列，非空且唯一的数量</li>
+</ul>
+</li>
+<li><code>sum()</code> 求列的和</li>
+</ul>
+<p><strong>聚合函数会忽略空值(NULL)</strong><br>解决办法 <code>avg(ifnull(score, 0))</code></p>
+<h2 id="group-by-分组查询"><a href="#group-by-分组查询" class="headerlink" title="group by 分组查询"></a>group by 分组查询</h2><p>当使用分组查询的时候 <code>select</code> 后面只能跟 <code>group by</code> 的字段名<br>或者用聚合函数</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 同年龄的各有多少人</span><br><span class="line"><span class="keyword">select</span> age, <span class="built_in">count</span>(<span class="number">1</span>) <span class="keyword">from</span> t_person <span class="keyword">group</span> <span class="keyword">by</span> age;</span><br></pre></td></tr></table></figure>
+
+<h2 id="having-过滤"><a href="#having-过滤" class="headerlink" title="having 过滤"></a>having 过滤</h2><p>没有使用 <code>group by</code> 分组时 <code>having</code> 可替代 <code>where</code><br>使用 <code>group by</code> 分组时 使用 <code>having</code> 进行二次过滤</p>
+<h2 id="窗口函数"><a href="#窗口函数" class="headerlink" title="窗口函数"></a>窗口函数</h2><p><code>where</code> 条件执行之后，才会执行窗口函数。</p>
+<p>窗口函数不能在 <code>where</code> 中使用</p>
 <ul>
-<li><p>一键关闭脚本</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">vim stopZk.sh</span><br><span class="line"></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line">hosts=(node1 node2 node3)</span><br><span class="line"><span class="keyword">for</span> host <span class="keyword">in</span> <span class="variable">$&#123;hosts[*]&#125;</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line"> ssh <span class="variable">$host</span> <span class="string">&quot;/export/server/zookeeper/bin/zkServer.sh stop&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>一键启动脚本</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">vim startZk.sh</span><br><span class="line"></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line">hosts=(node1 node2 node3)</span><br><span class="line"><span class="keyword">for</span> host <span class="keyword">in</span> <span class="variable">$&#123;hosts[*]&#125;</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line"> ssh <span class="variable">$host</span> <span class="string">&quot;source /etc/profile;/export/server/zookeeper/bin/zkServer.sh start&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>注意：关闭java进程时候 根据进程号 直接杀死即可就可以关闭。启动java进程的时候 需要JDK。</p>
-</li>
-<li><p>shell程序ssh登录的时候不会自动加载&#x2F;etc&#x2F;profile 需要shell程序中自己加载。</p>
+<li><code>group by</code> 是分组函数 只保留分组字段和聚合函数的结果</li>
+<li><code>partition by</code> 是分析函数 保留原有数据</li>
+</ul>
+<p>使用多重分组来保证每组的唯一性与数据的准确性<br>例如 <code>over(partition by name, tel)</code></p>
+<h2 id="排序函数"><a href="#排序函数" class="headerlink" title="排序函数"></a>排序函数</h2><ul>
+<li><code>rank()</code> 允许排名并列 存在序号不连续的情况</li>
+<li><code>dense_rank()</code> 允许排名并列 序号一定连续</li>
+<li><code>row_number()</code> 不允许排名并列，按查询到的顺序排序（索引）</li>
+<li><code>ntile(x)</code> 将数据分为x组，并给每组分配一个数子<br>例如：ntile(3) 按照排序分为3组，1代表上等，2代表中等，3代表下等</li>
+</ul>
+<h3 id="多重排序"><a href="#多重排序" class="headerlink" title="多重排序"></a>多重排序</h3><p>字段1相等时 按字段2排序<br><code>rank() over(order by col1, col2)</code></p>
+<h2 id="with-子查询"><a href="#with-子查询" class="headerlink" title="with 子查询"></a>with 子查询</h2><p>作用：创建临时表（不写入数据库）<br>由于不能直接获取窗口函数的结果，因此需要创建临时表来进行子查询</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 查询评分排名第二的游戏</span><br><span class="line"><span class="keyword">with</span> ranking <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span></span><br><span class="line">        name,</span><br><span class="line">        <span class="built_in">dense_rank</span>() <span class="keyword">over</span>(<span class="keyword">order</span> <span class="keyword">by</span> editor_rating <span class="keyword">desc</span>) <span class="keyword">as</span> `rank`</span><br><span class="line">    <span class="keyword">from</span> game</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> name <span class="keyword">from</span> ranking <span class="keyword">where</span> `rank` <span class="operator">=</span> <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="自定义窗口"><a href="#自定义窗口" class="headerlink" title="自定义窗口"></a>自定义窗口</h2><p>作用：以 <code>当前行</code> 为基准，精确控制要选取的数据范围（开窗大小）</p>
+<p><code>rows</code> 物理窗口<br><code>range</code> 逻辑窗口</p>
+<ul>
+<li><code>unbounded preceding</code> 对上限无限制</li>
+<li><code>n preceding</code> 当前行之前的第n行</li>
+<li><code>current row</code> 仅当前行</li>
+<li><code>n following</code> 当前行之后的第n行</li>
+<li><code>unbounded following</code> 对下限无限制</li>
+<li><code>between lower_bound and upper_bound</code> 当前行加下限与上限的区间之内</li>
+</ul>
+<p>简写<br><code>sum(price) over(order by `date` rows unbounded preceding)</code></p>
+<p>等价于</p>
+<p><code>sum(price) over(order by `date` rows between current row and unbounded preceding)</code></p>
+<p><strong>下限不能简写！</strong></p>
+<p><code>range</code> 和 <code>rows</code> 不同，<code>range</code> 的范围取决于跟在 <code>order by</code> 后的字段的值！</p>
+<p>假设函数为</p>
+<p><code>over(order by size range between 2 preceding and 2 following)</code></p>
+<p>则窗口大小是字段size的值在 <code>[size-2, size+2]</code>内的行</p>
+<h2 id="like-模糊查询"><a href="#like-模糊查询" class="headerlink" title="like 模糊查询"></a>like 模糊查询</h2><ul>
+<li><code>%</code> 0或多个任意字符</li>
+<li><code>_</code> 一个任意字符</li>
+</ul>
+<h2 id="分析函数"><a href="#分析函数" class="headerlink" title="分析函数"></a>分析函数</h2><p>作用：计算增量或转化率</p>
+<p>向下面行取</p>
+<ul>
+<li><code>lead(x, y, z)</code><ul>
+<li>x 要获取的字段</li>
+<li>y 偏移（省略则默认为1）</li>
+<li>z 默认值（省略则默认为NULL）</li>
+</ul>
 </li>
 </ul>
-<p>添加执行权限</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod u+x stopZk.sh</span><br><span class="line">chmod u+x startZk.sh</span><br></pre></td></tr></table></figure>
+<p><code>lead(x, 2) over()</code></p>
+<p><code>当前行</code> 为第一行时，获取第3行的x字段值，若没有则返回z</p>
+<p>同理</p>
+<p>向上面行取</p>
+<ul>
+<li><code>lag(x, y, z)</code></li>
+</ul>
+<p><code>lag(x, 2) over()</code></p>
+<p><code>当前行</code> 为第3行时，获取第1行的x字段值，若没有则返回z</p>
+<p><code>lead(...) over(order by ...)</code></p>
+<p>等价于</p>
+<p><code>lag(...) over(order by ... desc)</code></p>
+<p>返回指定列的第一个值</p>
+<ul>
+<li><code>first_value(x)</code></li>
+</ul>
+<p>返回指定列的最后一个值</p>
+<ul>
+<li><code>last_value(x)</code></li>
+</ul>
+<p>当 <code>over</code> 子句中包含 <code>order by</code> 时， 如果不显式定义窗口大小，SQL会带上默认的语句 <code>range unbounded preceding</code>，意味着查询范围被限定在第一行至当前行！</p>
+<p>想要通过 <code>last_value</code> 与 <code>over()</code> 取所有数据排序后的最后一个值，则需要定义窗口大小为如下。</p>
+<p><code>last_value(col1) over(order by col2 [rows|range] between unbounded preceding and unbounded following)</code></p>
+<p>返回指定列的第几行的值</p>
+<ul>
+<li><code>nth_value(x, n)</code><ul>
+<li>x 列名</li>
+<li>n 第几行</li>
+</ul>
+</li>
+</ul>
+
       
     </div>
     
@@ -450,7 +529,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Zookeeper%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2.html" title="Zookeeper集群部署">https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Zookeeper%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2.html</a>
+    <a href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html" title="SQL学习笔记">https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -465,7 +544,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Zookeeper/" rel="tag"># Zookeeper</a>
+            <a href="/tags/SQL/" rel="tag"># SQL</a>
           
         </div>
       
@@ -478,8 +557,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E9%85%8D%E7%BD%AE%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%A4%87%E6%9F%A5.html" rel="next" title="配置开发环境备查">
-                <i class="fa fa-chevron-left"></i> 配置开发环境备查
+              <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html" rel="next" title="Zookeeper学习笔记">
+                <i class="fa fa-chevron-left"></i> Zookeeper学习笔记
               </a>
             
           </div>
@@ -488,8 +567,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Zookeeper%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html" rel="prev" title="Zookeeper学习笔记">
-                Zookeeper学习笔记 <i class="fa fa-chevron-right"></i>
+              <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDDL.html" rel="prev" title="Hive常用SQL之DDL">
+                Hive常用SQL之DDL <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -646,7 +725,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E8%A7%A3%E5%8E%8B"><span class="nav-text">下载解压</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEZookeeper"><span class="nav-text">配置Zookeeper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8Zookeeper"><span class="nav-text">启动Zookeeper</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A9%BA%E5%80%BC-NULL"><span class="nav-text">空值(NULL)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#order-by-%E6%8E%92%E5%BA%8F"><span class="nav-text">order by 排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#limit"><span class="nav-text">limit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0"><span class="nav-text">聚合函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#group-by-%E5%88%86%E7%BB%84%E6%9F%A5%E8%AF%A2"><span class="nav-text">group by 分组查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#having-%E8%BF%87%E6%BB%A4"><span class="nav-text">having 过滤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0"><span class="nav-text">窗口函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E5%87%BD%E6%95%B0"><span class="nav-text">排序函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E9%87%8D%E6%8E%92%E5%BA%8F"><span class="nav-text">多重排序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#with-%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-text">with 子查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AA%97%E5%8F%A3"><span class="nav-text">自定义窗口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#like-%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2"><span class="nav-text">like 模糊查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E5%87%BD%E6%95%B0"><span class="nav-text">分析函数</span></a></li></ol></div>
             
 
           </div>
@@ -809,9 +888,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Zookeeper%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2.html';
-          this.page.identifier = '大数据开发/Zookeeper集群部署.html';
-          this.page.title = 'Zookeeper集群部署';
+          this.page.url = 'https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/SQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html';
+          this.page.identifier = '大数据开发/SQL学习笔记.html';
+          this.page.title = 'SQL学习笔记';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://ovolol.disqus.com/embed.js';
