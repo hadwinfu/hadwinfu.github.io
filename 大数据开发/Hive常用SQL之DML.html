@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next muse" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hive,SQL," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="loadload加载操作是将数据文件移动到与Hive表对应的位置的纯复制&#x2F;移动操作。若文件从本地文件系统加载，则将文件复制一份到HDFS的数据库目录中；若文件从HDFS中加载，则将文件从原位置移动到数据库目录下。 使用语法： 12LOAD DATA [LOCAL] INPATH &amp;#x27;filepath&amp;#x27; [OVERWRITE] INTOTABLE tablename [P">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hive常用SQL之DML">
+<meta property="og:url" content="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDML.html">
+<meta property="og:site_name" content="黑洞">
+<meta property="og:description" content="loadload加载操作是将数据文件移动到与Hive表对应的位置的纯复制&#x2F;移动操作。若文件从本地文件系统加载，则将文件复制一份到HDFS的数据库目录中；若文件从HDFS中加载，则将文件从原位置移动到数据库目录下。 使用语法： 12LOAD DATA [LOCAL] INPATH &amp;#x27;filepath&amp;#x27; [OVERWRITE] INTOTABLE tablename [P">
+<meta property="og:locale">
+<meta property="article:published_time" content="2022-04-07T01:06:55.000Z">
+<meta property="article:modified_time" content="2022-04-07T01:08:26.335Z">
+<meta property="article:author" content="Mr Fu">
+<meta property="article:tag" content="Hive">
+<meta property="article:tag" content="SQL">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://ovo.lol/大数据开发/Hive常用SQL之DML.html"/>
+
+
+
+
+
+  <title>Hive常用SQL之DML | 黑洞</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黑洞</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">这里藏着一些独特的想法</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDML.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黑洞">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Hive常用SQL之DML</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-04-07T09:06:55+08:00">
+                2022-04-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDML.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="大数据开发/Hive常用SQL之DML.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="load"><a href="#load" class="headerlink" title="load"></a>load</h2><p><code>load</code>加载操作是将数据文件移动到与Hive表对应的位置的纯复制&#x2F;移动操作。若文件从本地文件系统加载，则将文件复制一份到HDFS的数据库目录中；若文件从HDFS中加载，则将文件从原位置移动到数据库目录下。</p>
+<p>使用语法：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LOAD DATA [<span class="keyword">LOCAL</span>] INPATH <span class="string">&#x27;filepath&#x27;</span> [OVERWRITE] <span class="keyword">INTO</span></span><br><span class="line"><span class="keyword">TABLE</span> tablename [<span class="keyword">PARTITION</span> (partcol1<span class="operator">=</span>val1, partcol2<span class="operator">=</span>val2 ...)]</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>若指定<code>local</code>参数，表示从本地文件系统加载数据，反之从HDFS。</p>
+<p>建议在Hive中使用<code>load</code>命令加载数据到表中，这也是Hive比Mysql加载数据高效地方所在。</p>
+<blockquote>
+<p>值得注意的是，指定local后并不是从客户端的本地文件系统加载数据，而是从Hive服务端（HS2）的文件系统中寻找。</p>
+</blockquote>
+<h2 id="insert"><a href="#insert" class="headerlink" title="insert"></a>insert</h2><p>与Mysql相同，Hive中也支持<code>insert+values</code>的方式插入数据，但是效率极其低下。因为底层是通过MapReduce插入数据的  因此实际中推荐使用load加载数据。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t_insert(id <span class="type">int</span>,name string);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">table</span> t_insert <span class="keyword">values</span>(<span class="number">1</span>,&quot;allen&quot;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="insert-select"><a href="#insert-select" class="headerlink" title="insert + select"></a>insert + select</h2><blockquote>
+<p>在hive中，insert主要是结合select查询语句使用，将查询结果插入到表中。</p>
+</blockquote>
+<ul>
+<li>保证后面<code>select</code><strong>查询语句返回的结果字段个数、类型、顺序和待插入表一致</strong>；</li>
+<li>如果不一致，Hive会尝试帮你转换，但是不保证成功；</li>
+<li><code>insert+select</code>也是在数仓中ETL数据常见的操作。</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--step1:创建一张源表student</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> if <span class="keyword">exists</span> student;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> student(num <span class="type">int</span>,name string,sex string,age <span class="type">int</span>,dept string)</span><br><span class="line"><span class="type">row</span> format delimited</span><br><span class="line">fields terminated <span class="keyword">by</span> <span class="string">&#x27;,&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--加载数据</span></span><br><span class="line">load data <span class="keyword">local</span> inpath <span class="string">&#x27;/root/hivedata/students.txt&#x27;</span> <span class="keyword">into</span> <span class="keyword">table</span> student;</span><br><span class="line"></span><br><span class="line"><span class="comment">--step2：创建一张目标表  只有两个字段</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> student_from_insert(sno <span class="type">int</span>,sname string);</span><br><span class="line"><span class="comment">--使用insert+select插入数据到新表中</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">table</span> student_from_insert <span class="keyword">select</span> num,name <span class="keyword">from</span> student;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Multi-inserts-多重插入"><a href="#Multi-inserts-多重插入" class="headerlink" title="Multi inserts 多重插入"></a>Multi inserts 多重插入</h2><ul>
+<li>功能：<strong>一次扫描，多次插入</strong></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> source_table (id <span class="type">int</span>, name string) <span class="type">row</span> format delimited fields terminated <span class="keyword">by</span> <span class="string">&#x27;,&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> test_insert1 (id <span class="type">int</span>) <span class="type">row</span> format delimited fields terminated <span class="keyword">by</span> <span class="string">&#x27;,&#x27;</span>;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> test_insert2 (name string) <span class="type">row</span> format delimited fields terminated <span class="keyword">by</span> <span class="string">&#x27;,&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--普通插入：</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">table</span> test_insert1 <span class="keyword">select</span> id <span class="keyword">from</span> source_table;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">table</span> test_insert2 <span class="keyword">select</span> name <span class="keyword">from</span> source_table;</span><br><span class="line"></span><br><span class="line"><span class="comment">--在上述需求实现中 从同一张表扫描了2次 分别插入不同的目标表中 性能低下。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--多重插入：</span></span><br><span class="line"><span class="keyword">from</span> source_table                     </span><br><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> test_insert1 </span><br><span class="line"><span class="keyword">select</span> id</span><br><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> test_insert2</span><br><span class="line"><span class="keyword">select</span> name;</span><br><span class="line"><span class="comment">--只需要扫描一次表  分别把不同字段插入到不同的表中即可 减少扫描次数 提高效率</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Dynamic-partition-inserts-动态分区插入"><a href="#Dynamic-partition-inserts-动态分区插入" class="headerlink" title="Dynamic partition inserts 动态分区插入"></a>Dynamic partition inserts 动态分区插入</h2><ul>
+<li><p>何谓动态分区，静态分区</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">针对的是分区表。</span><br><span class="line"><span class="comment">--问题：分区表中分区字段值是如何确定的？</span></span><br><span class="line"></span><br><span class="line"><span class="number">1</span>、如果是在加载数据的时候人手动写死指定的  叫做静态分区 </span><br><span class="line">load data <span class="keyword">local</span> inpath <span class="string">&#x27;/root/hivedata/usa_texas.txt&#x27;</span></span><br><span class="line"><span class="keyword">into</span> <span class="keyword">table</span> t_user_double_p <span class="keyword">partition</span>(guojia<span class="operator">=</span>&quot;usa&quot;,sheng<span class="operator">=</span>&quot;texas&quot;);</span><br><span class="line"></span><br><span class="line"><span class="number">2</span>、如果是通过<span class="keyword">insert</span><span class="operator">+</span><span class="keyword">select</span> 动态确定分区值的，叫做动态分区</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">table</span> <span class="keyword">partition</span> (分区字段) <span class="operator">+</span> <span class="keyword">select</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>栗子</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--1、首先设置动态分区模式为非严格模式 默认已经开启了动态分区功能</span></span><br><span class="line"><span class="keyword">set</span> hive.exec.dynamic.partition <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">set</span> hive.exec.dynamic.partition.mode <span class="operator">=</span> nonstrict;</span><br><span class="line"></span><br><span class="line"><span class="comment">--2、当前库下已有一张表student</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student;</span><br><span class="line"></span><br><span class="line"><span class="comment">--3、创建分区表 以sdept作为分区字段</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> student_partition(Sno <span class="type">int</span>,Sname string,Sex string,Sage <span class="type">int</span>)</span><br><span class="line">partitioned <span class="keyword">by</span>(Sdept string);</span><br><span class="line"></span><br><span class="line"><span class="comment">--4、执行动态分区插入操作</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">table</span> student_partition <span class="keyword">partition</span>(Sdept)</span><br><span class="line"><span class="keyword">select</span> num,name,sex,age,dept <span class="keyword">from</span> student;</span><br><span class="line"><span class="comment">--其中，num,name,sex,age作为表的字段内容插入表中</span></span><br><span class="line"><span class="comment">--dept作为分区字段值</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">from</span> student_partition;</span><br><span class="line"></span><br><span class="line"><span class="keyword">show</span> partitions student_partition;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="导出数据"><a href="#导出数据" class="headerlink" title="导出数据"></a>导出数据</h2><ul>
+<li><p>功能：把select查询的结果导出成为一个文件。</p>
+</li>
+<li><p>注意：**&#x3D;&#x3D;导出操作是一个overwrite操作&#x3D;&#x3D;**，将会清空整个目标文件夹，效果不亚于<code>rm -rf /*</code>！</p>
+</li>
+<li><p>语法</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--当前库下已有一张表student</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student;</span><br><span class="line"></span><br><span class="line"><span class="comment">--1、导出查询结果到HDFS指定目录下</span></span><br><span class="line"><span class="keyword">insert</span> overwrite directory <span class="string">&#x27;/tmp/hive_export/e1&#x27;</span></span><br><span class="line"><span class="keyword">select</span> num,name,age</span><br><span class="line"><span class="keyword">from</span> student limit <span class="number">2</span>;   <span class="comment">--默认导出数据字段之间的分隔符是\001</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--2、导出时指定分隔符和文件存储格式</span></span><br><span class="line"><span class="keyword">insert</span> overwrite directory <span class="string">&#x27;/tmp/hive_export/e2&#x27;</span></span><br><span class="line"><span class="type">row</span> format delimited fields terminated <span class="keyword">by</span> <span class="string">&#x27;,&#x27;</span></span><br><span class="line">stored <span class="keyword">as</span> orc</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student;</span><br><span class="line"></span><br><span class="line"><span class="comment">--3、导出数据到本地文件系统指定目录下</span></span><br><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">local</span> directory <span class="string">&#x27;/root/hive_export/e1&#x27;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>如果觉得文章写得不错或对您有帮助，请我喝杯柠檬茶吧！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Mr Fu
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDML.html" title="Hive常用SQL之DML">https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDML.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Hive/" rel="tag"># Hive</a>
+          
+            <a href="/tags/SQL/" rel="tag"># SQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/%E6%97%A5%E8%AE%B0/%E4%B8%8A%E5%91%A8%E5%B0%8F%E7%BB%93.html" rel="next" title="上周小结">
+                <i class="fa fa-chevron-left"></i> 上周小结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.papwin.com/" title="潘岸平的獨立博客" target="_blank">潘岸平的獨立博客</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#load"><span class="nav-text">load</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#insert"><span class="nav-text">insert</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#insert-select"><span class="nav-text">insert + select</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Multi-inserts-%E5%A4%9A%E9%87%8D%E6%8F%92%E5%85%A5"><span class="nav-text">Multi inserts 多重插入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dynamic-partition-inserts-%E5%8A%A8%E6%80%81%E5%88%86%E5%8C%BA%E6%8F%92%E5%85%A5"><span class="nav-text">Dynamic partition inserts 动态分区插入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%87%BA%E6%95%B0%E6%8D%AE"><span class="nav-text">导出数据</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr Fu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://ovolol.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDML.html';
+          this.page.identifier = '大数据开发/Hive常用SQL之DML.html';
+          this.page.title = 'Hive常用SQL之DML';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://ovolol.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
