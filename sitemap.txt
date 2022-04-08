@@ -1,5 +1,5 @@
-https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDQL.html
 https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDDL.html
+https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDQL.html
 https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDML.html
 https://ovo.lol/tags/index.html
 https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E9%85%8D%E7%BD%AE%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%A4%87%E6%9F%A5.html
@@ -13,9 +13,9 @@ https://ovo.lol/%E6%97%A5%E8%AE%B0/%E5%AD%A6%E4%B9%A0%E5%A4%A7%E6%95%B0%E6%8D%AE
 https://ovo.lol/%E6%97%A5%E8%AE%B0/%E5%85%A8%E6%96%B0%E5%BC%80%E5%A7%8B.html
 https://ovo.lol/categories/index.html
 https://ovo.lol/
+https://ovo.lol/tags/Hadoop/
 https://ovo.lol/tags/Hive/
 https://ovo.lol/tags/SQL/
-https://ovo.lol/tags/Hadoop/
 https://ovo.lol/tags/Zookeeper/
 https://ovo.lol/tags/Linux/
 https://ovo.lol/tags/Java/
