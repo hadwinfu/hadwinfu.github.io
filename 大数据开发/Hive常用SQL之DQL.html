@@ -111,7 +111,7 @@
 <meta property="og:description" content="Hive发展至今，已支持大部分Mysql中的语法，基础语法在此不过多赘述。 本文重点记录一些特别的查询语句。 12345678910[WITH CommonTableExpression (, CommonTableExpression)*]SELECT [ALL | DISTINCT] select_expr, select_expr, ...FROM table_reference[WHERE">
 <meta property="og:locale">
 <meta property="article:published_time" content="2022-04-08T02:21:43.000Z">
-<meta property="article:modified_time" content="2022-04-08T13:45:12.319Z">
+<meta property="article:modified_time" content="2022-04-08T13:48:57.312Z">
 <meta property="article:author" content="Mr Fu">
 <meta property="article:tag" content="Hive">
 <meta property="article:tag" content="SQL">
@@ -394,7 +394,7 @@
 
 <span id="more"></span>
 <hr>
-<h2 id="分区查询（分区裁剪）"><a href="#分区查询（分区裁剪）" class="headerlink" title="分区查询（分区裁剪）"></a>分区查询（分区裁剪）</h2><p>通常，<code>SELECT</code>查询将扫描整个表（所谓的全表扫描）。如果使用<code>PARTITIONED BY</code><br>子句创建的分区表，则在查询时可以指定分区查询，减少全表扫描，也叫做分区裁剪。</p>
+<h2 id="分区查询（分区裁剪）"><a href="#分区查询（分区裁剪）" class="headerlink" title="分区查询（分区裁剪）"></a>分区查询（分区裁剪）</h2><p>通常，<code>SELECT</code>查询将扫描整个表（所谓的全表扫描）。如果使用<code>PARTITIONED BY</code>子句创建的分区表，则在查询时可以指定分区查询，减少全表扫描，也叫做分区裁剪。</p>
 <p>所谓分区裁剪指的是：对分区表进行查询时，会检查<code>WHERE</code>子句或<code>JOIN</code>中的<code>ON</code>子句中是否存在对分区字段的过滤，如果存在，则仅访问查询符合条件的分区，即裁剪掉没必要访问的分区。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--创建分区表</span></span><br><span class="line">creat <span class="keyword">table</span> t_1(</span><br><span class="line">    id <span class="type">int</span>,</span><br><span class="line">    name string,</span><br><span class="line">    gender string,</span><br><span class="line">    addr string</span><br><span class="line">) partitioned <span class="keyword">by</span> (gender_p string)</span><br><span class="line"><span class="type">row</span> format delimited fields</span><br><span class="line">terminated <span class="keyword">by</span> <span class="string">&#x27;\001&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--动态加载分区表</span></span><br><span class="line"><span class="keyword">set</span> hive.exec.dynamic.partition.mode <span class="operator">=</span> nonstrict;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> t_1 <span class="keyword">partition</span> (gender_p)</span><br><span class="line"><span class="keyword">select</span> ori.<span class="operator">*</span>, gender <span class="keyword">from</span> t_ori <span class="keyword">as</span> ori;</span><br><span class="line"></span><br><span class="line"><span class="comment">--分区表查询，顺利执行</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_1 <span class="keyword">where</span> t_1.gender_p <span class="operator">=</span> <span class="string">&#x27;male&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--严格模式下不指定分区将报错，因为t_1是个分区表！</span></span><br><span class="line"><span class="keyword">set</span> hive.mapred.mode <span class="operator">=</span> strict</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_1</span><br></pre></td></tr></table></figure>
 
@@ -435,7 +435,7 @@
 
 <h2 id="join-连接查询"><a href="#join-连接查询" class="headerlink" title="join 连接查询"></a>join 连接查询</h2><p>Hive作为面向分析的数据仓库软件，为了更好的支持数据分析的功能丰富，也实现了<code>join</code>的语法，整体上来看和RDBMS中的<code>join</code>语法类似，只不过在某些点有自己的特色。需要特别注意。</p>
 <ul>
-<li>从Hive 0.13.0开始，支持隐式连接表示法。这允许FROM子句连接以逗号分隔的表列表，而省略<code>JOIN</code>关键字。</li>
+<li>从Hive 0.13.0开始，支持隐式连接表示法。这允许<code>FROM</code>子句连接以逗号分隔的表列表，而省略<code>JOIN</code>关键字。</li>
 <li>从Hive 2.2.0开始，支持<code>ON</code>子句中的复杂表达式，支持非等值连接。</li>
 </ul>
 <p>在SQL标准中定义的<code>cross join</code>就是无条件的<code>inner join</code>。返回两个表的笛卡尔积,无需指定关联键。</p>
