@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next muse" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hive,SQL," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Hive发展至今，已支持大部分Mysql中的语法，基础语法在此不过多赘述。 本文重点记录一些特别的查询语句。 12345678910[WITH CommonTableExpression (, CommonTableExpression)*]SELECT [ALL | DISTINCT] select_expr, select_expr, ...FROM table_reference[WHERE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hive常用SQL之DQL">
+<meta property="og:url" content="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDQL.html">
+<meta property="og:site_name" content="黑洞">
+<meta property="og:description" content="Hive发展至今，已支持大部分Mysql中的语法，基础语法在此不过多赘述。 本文重点记录一些特别的查询语句。 12345678910[WITH CommonTableExpression (, CommonTableExpression)*]SELECT [ALL | DISTINCT] select_expr, select_expr, ...FROM table_reference[WHERE">
+<meta property="og:locale">
+<meta property="article:published_time" content="2022-04-08T02:21:43.000Z">
+<meta property="article:modified_time" content="2022-04-08T13:45:12.319Z">
+<meta property="article:author" content="Mr Fu">
+<meta property="article:tag" content="Hive">
+<meta property="article:tag" content="SQL">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://ovo.lol/大数据开发/Hive常用SQL之DQL.html"/>
+
+
+
+
+
+  <title>Hive常用SQL之DQL | 黑洞</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">黑洞</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">这里藏着一些独特的想法</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDQL.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黑洞">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Hive常用SQL之DQL</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-04-08T10:21:43+08:00">
+                2022-04-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDQL.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="大数据开发/Hive常用SQL之DQL.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Hive发展至今，已支持大部分Mysql中的语法，基础语法在此不过多赘述。</p>
+<p>本文重点记录一些特别的查询语句。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[<span class="keyword">WITH</span> CommonTableExpression (, CommonTableExpression)<span class="operator">*</span>]</span><br><span class="line"><span class="keyword">SELECT</span> [<span class="keyword">ALL</span> <span class="operator">|</span> <span class="keyword">DISTINCT</span>] select_expr, select_expr, ...</span><br><span class="line"><span class="keyword">FROM</span> table_reference</span><br><span class="line">[<span class="keyword">WHERE</span> where_condition]</span><br><span class="line">[<span class="keyword">GROUP</span> <span class="keyword">BY</span> col_list]</span><br><span class="line">[<span class="keyword">ORDER</span> <span class="keyword">BY</span> col_list]</span><br><span class="line">[CLUSTER <span class="keyword">BY</span> col_list</span><br><span class="line">    <span class="operator">|</span> [DISTRIBUTE <span class="keyword">BY</span> col_list] [SORT <span class="keyword">BY</span> col_list]</span><br><span class="line">]</span><br><span class="line">[LIMIT [<span class="keyword">offset</span>,] <span class="keyword">rows</span>]</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+<hr>
+<h2 id="分区查询（分区裁剪）"><a href="#分区查询（分区裁剪）" class="headerlink" title="分区查询（分区裁剪）"></a>分区查询（分区裁剪）</h2><p>通常，<code>SELECT</code>查询将扫描整个表（所谓的全表扫描）。如果使用<code>PARTITIONED BY</code><br>子句创建的分区表，则在查询时可以指定分区查询，减少全表扫描，也叫做分区裁剪。</p>
+<p>所谓分区裁剪指的是：对分区表进行查询时，会检查<code>WHERE</code>子句或<code>JOIN</code>中的<code>ON</code>子句中是否存在对分区字段的过滤，如果存在，则仅访问查询符合条件的分区，即裁剪掉没必要访问的分区。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--创建分区表</span></span><br><span class="line">creat <span class="keyword">table</span> t_1(</span><br><span class="line">    id <span class="type">int</span>,</span><br><span class="line">    name string,</span><br><span class="line">    gender string,</span><br><span class="line">    addr string</span><br><span class="line">) partitioned <span class="keyword">by</span> (gender_p string)</span><br><span class="line"><span class="type">row</span> format delimited fields</span><br><span class="line">terminated <span class="keyword">by</span> <span class="string">&#x27;\001&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--动态加载分区表</span></span><br><span class="line"><span class="keyword">set</span> hive.exec.dynamic.partition.mode <span class="operator">=</span> nonstrict;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> t_1 <span class="keyword">partition</span> (gender_p)</span><br><span class="line"><span class="keyword">select</span> ori.<span class="operator">*</span>, gender <span class="keyword">from</span> t_ori <span class="keyword">as</span> ori;</span><br><span class="line"></span><br><span class="line"><span class="comment">--分区表查询，顺利执行</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_1 <span class="keyword">where</span> t_1.gender_p <span class="operator">=</span> <span class="string">&#x27;male&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--严格模式下不指定分区将报错，因为t_1是个分区表！</span></span><br><span class="line"><span class="keyword">set</span> hive.mapred.mode <span class="operator">=</span> strict</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_1</span><br></pre></td></tr></table></figure>
+
+<h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><h3 id="order-by"><a href="#order-by" class="headerlink" title="order by"></a>order by</h3><p>Hive SQL中的<code>order by</code>语法类似于SQL语言中的<code>order by</code>语法。会对输出的结果进行全局排序，因此底层使用MapReduce引擎执行的时候，只会有一个reduce task执行。也因此，如果输出的行数太大，会导致需要很长的时间才能完成全局排序。</p>
+<p>默认排序顺序为<code>ASC</code>升序，也可以指定为<code>DESC</code>降序。</p>
+<p>在Hive 2.1.0和更高版本中，支持在<code>order by</code>子句中为每个列指定null类型结果排序顺序。ASC顺序的默认空排序顺序为NULLS FIRST，而DESC顺序的默认空排序顺序为NULLS LAST。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">---order by</span></span><br><span class="line"><span class="comment">--根据字段进行排序</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_usa_covid19_p</span><br><span class="line"><span class="keyword">where</span> count_date <span class="operator">=</span> &quot;2021-01-28&quot;</span><br><span class="line"><span class="keyword">and</span> state <span class="operator">=</span>&quot;California&quot;</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> deaths; <span class="comment">-- null first</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_usa_covid19_p</span><br><span class="line"><span class="keyword">where</span> count_date <span class="operator">=</span> &quot;2021-01-28&quot;</span><br><span class="line"><span class="keyword">and</span> state <span class="operator">=</span>&quot;California&quot;</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> deaths <span class="keyword">desc</span>; <span class="comment">-- null last</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--当 hive.mapred.mode 设置为 strict 严格模式时，使用不带 LIMIT 的 ORDER BY 时会引发异常。</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_usa_covid19_p</span><br><span class="line"><span class="keyword">where</span> count_date <span class="operator">=</span> &quot;2021-01-28&quot; <span class="keyword">and</span> state <span class="operator">=</span>&quot;California&quot;</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> deaths <span class="keyword">desc</span></span><br><span class="line">limit <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="cluster-by"><a href="#cluster-by" class="headerlink" title="cluster by"></a>cluster by</h3><p>Hive SQL中的<code>cluster by</code>语法可以指定根据后面的字段将数据分组，每组内再根据这个字段正序排序（不允许指定排序规则），概括起来就是：根据同一个字段，分且排序。</p>
+<p>分组规则：<code>hash_func(col_name) % reduce task nums</code></p>
+<p>分为几组取决于reduce task的个数。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--创建学生表</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> student(</span><br><span class="line">    sid <span class="type">int</span>,</span><br><span class="line">    name string,</span><br><span class="line">    age <span class="type">int</span>,</span><br><span class="line">    classId <span class="type">int</span></span><br><span class="line">) <span class="type">row</span> format delimited fields</span><br><span class="line">terminated <span class="keyword">by</span> <span class="string">&#x27;\001&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--手动设置 reduce task 个数，不设置由Hive在编译期间自动决定。</span></span><br><span class="line"><span class="keyword">set</span> mapreduce.job.reduces <span class="operator">=</span> <span class="number">2</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student cluster <span class="keyword">by</span> sid;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>cluster by 不要和 order by 一起使用，因为 order by 会将 reduce task 重置为1，如果需要分组后按其他字段排序请使用下面介绍的语句。</p>
+</blockquote>
+<h3 id="distribute-by-sort-by"><a href="#distribute-by-sort-by" class="headerlink" title="distribute by + sort by"></a>distribute by + sort by</h3><p>如果说<code>cluster by</code>的功能是分且排序（同一个字段），那么<code>distribute by + sort by</code>就相当于把<code>cluster by</code>的功能一分为二：</p>
+<p><code>distribute by</code>负责分，<code>sort by</code>负责分组内排序，并且可以是不同的字段。</p>
+<p>当<code>distribute by + sort by</code>的字段一样时：</p>
+<p><code>cluster by</code> &#x3D; <code>distribute by + sort by</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--查询学生表 按班级分组按年龄降序排序</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student distribute <span class="keyword">by</span> classID sort <span class="keyword">by</span> age <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>distribute by 与 cluster by 使用的都是算法都是hash散列。</p>
+</blockquote>
+<h2 id="union-联合查询"><a href="#union-联合查询" class="headerlink" title="union 联合查询"></a>union 联合查询</h2><p><code>union</code>用于将来自多个<code>select</code>语句的结果合并为一个结果集。语法如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select_statement <span class="keyword">UNION</span> [<span class="keyword">ALL</span> <span class="operator">|</span> <span class="keyword">DISTINCT</span>] select_statement <span class="keyword">UNION</span></span><br><span class="line">[<span class="keyword">ALL</span> <span class="operator">|</span> <span class="keyword">DISTINCT</span>] select_statement ...</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>union distinct</code>与只使用<code>union</code>效果一样，都会删除重复行。</p>
+<p>使用<code>all</code>关键字，不会删除重复行，结果集包括所有&#96;select语句的匹配行（包括重复<br>行）。</p>
+<p>1.2.0之前的Hive版本仅支持<code>union all</code>，在这种情况下不会消除重复的行。</p>
+<p>每个select_statement返回的列的数量和名称必须相同。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--如果要将 ORDER BY，SORT BY，CLUSTER BY，DISTRIBUTE BY 或 LIMIT 子句应用于整个 UNION 结果</span></span><br><span class="line"><span class="comment">--请将 ORDER BY，SORT BY，CLUSTER BY，DISTRIBUTE BY 或 LIMIT 放在最后一个之后。</span></span><br><span class="line"><span class="keyword">select</span> sno,sname <span class="keyword">from</span> student_local</span><br><span class="line"><span class="keyword">UNION</span></span><br><span class="line"><span class="keyword">select</span> sno,sname <span class="keyword">from</span> student_hdfs</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> sno <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Common-Table-Expressions-CTE"><a href="#Common-Table-Expressions-CTE" class="headerlink" title="Common Table Expressions (CTE)"></a>Common Table Expressions (CTE)</h2><p>公用表表达式（CTE）是一个临时结果集，该结果集是从WITH子句中指定的简单查询派生而来的，该查询紧接在<code>SELECT</code>或<code>INSERT</code>关键字之前。</p>
+<p>CTE仅在单个语句的执行范围内定义。一个或多个CTE可以在Hive <code>SELECT</code>，<code>INSERT</code>，<code>CREATE TABLE AS SELECT</code>或<code>CREATE VIEW AS SELECT</code>语句中使用。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--基本用法</span></span><br><span class="line"><span class="keyword">with</span> q1 <span class="keyword">as</span> (<span class="keyword">select</span> sno,sname,sage <span class="keyword">from</span> student <span class="keyword">where</span> sno <span class="operator">=</span> <span class="number">95002</span>)</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> q1;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- from 风格</span></span><br><span class="line"><span class="keyword">with</span> q1 <span class="keyword">as</span> (<span class="keyword">select</span> sno,sname,sage <span class="keyword">from</span> student <span class="keyword">where</span> sno <span class="operator">=</span> <span class="number">95002</span>)</span><br><span class="line"><span class="keyword">from</span> q1</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- chaining CTEs 链式</span></span><br><span class="line"><span class="keyword">with</span> q1 <span class="keyword">as</span> ( <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student <span class="keyword">where</span> sno <span class="operator">=</span> <span class="number">95002</span>),</span><br><span class="line">q2 <span class="keyword">as</span> ( <span class="keyword">select</span> sno,sname,sage <span class="keyword">from</span> q1)</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> (<span class="keyword">select</span> sno <span class="keyword">from</span> q2) a;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- union 案例</span></span><br><span class="line"><span class="keyword">with</span> q1 <span class="keyword">as</span> (<span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student <span class="keyword">where</span> sno <span class="operator">=</span> <span class="number">95002</span>),</span><br><span class="line">q2 <span class="keyword">as</span> (<span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student <span class="keyword">where</span> sno <span class="operator">=</span> <span class="number">95004</span>)</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> q1 <span class="keyword">union</span> <span class="keyword">all</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> q2;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- ctas</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> s2 <span class="keyword">as</span></span><br><span class="line"><span class="keyword">with</span> q1 <span class="keyword">as</span> ( <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student <span class="keyword">where</span> sno <span class="operator">=</span> <span class="number">95002</span>)</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> q1;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- view</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">view</span> v1 <span class="keyword">as</span></span><br><span class="line"><span class="keyword">with</span> q1 <span class="keyword">as</span> ( <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student <span class="keyword">where</span> sno <span class="operator">=</span> <span class="number">95002</span>)</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> q1;</span><br></pre></td></tr></table></figure>
+
+<h2 id="join-连接查询"><a href="#join-连接查询" class="headerlink" title="join 连接查询"></a>join 连接查询</h2><p>Hive作为面向分析的数据仓库软件，为了更好的支持数据分析的功能丰富，也实现了<code>join</code>的语法，整体上来看和RDBMS中的<code>join</code>语法类似，只不过在某些点有自己的特色。需要特别注意。</p>
+<ul>
+<li>从Hive 0.13.0开始，支持隐式连接表示法。这允许FROM子句连接以逗号分隔的表列表，而省略<code>JOIN</code>关键字。</li>
+<li>从Hive 2.2.0开始，支持<code>ON</code>子句中的复杂表达式，支持非等值连接。</li>
+</ul>
+<p>在SQL标准中定义的<code>cross join</code>就是无条件的<code>inner join</code>。返回两个表的笛卡尔积,无需指定关联键。</p>
+<p>在HiveSQL语法中，<code>cross join</code>后面可以跟<code>where</code>子句进行过滤，或者<code>on</code>条件过滤。但是！语句执行期间往往会先计算笛卡尔积返回数据，然后再执行<code>where</code>过滤。</p>
+<p><strong>因此，如果两个表太大，执行将会非常非常慢，不建议在笛卡尔积后使用where。</strong></p>
+<p>如果每个表在连接子句中使用相同的列，Hive将会把多个表连接为单个MR作业</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> a.val, b.val, c.val <span class="keyword">FROM</span> a</span><br><span class="line"><span class="keyword">JOIN</span> b <span class="keyword">ON</span> (a.key <span class="operator">=</span> b.key1)</span><br><span class="line"><span class="keyword">JOIN</span> c <span class="keyword">ON</span> (c.key <span class="operator">=</span> b.key1)</span><br><span class="line"><span class="comment">--由于联接中仅涉及b的key1列，因此被转换为1个MR作业来执行。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> a.val, b.val, c.val <span class="keyword">FROM</span> a</span><br><span class="line"><span class="keyword">JOIN</span> b <span class="keyword">ON</span> (a.key <span class="operator">=</span> b.key1)</span><br><span class="line"><span class="keyword">JOIN</span> c <span class="keyword">ON</span> (c.key <span class="operator">=</span> b.key2)</span><br><span class="line"><span class="comment">--会转换为两个MR作业，因为在第一个连接条件中使用了b中的key1列</span></span><br><span class="line"><span class="comment">--而在第二个连接条件中使用了b中的key2列</span></span><br><span class="line"><span class="comment">--第一个MR作业将a与b联接在一起，然后将结果与c联接到第二个MR作业中。</span></span><br></pre></td></tr></table></figure>
+
+<p><code>join</code>时的最后一个表会通过reducer流式传输，并在其中缓冲之前的其他表，<strong>因此，将大表放置在最后有助于减少reducer阶段缓存数据所需要的内存。</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> a.val, b.val, c.val <span class="keyword">FROM</span> a</span><br><span class="line"><span class="keyword">JOIN</span> b <span class="keyword">ON</span> (a.key <span class="operator">=</span> b.key1)</span><br><span class="line"><span class="keyword">JOIN</span> c <span class="keyword">ON</span> (c.key <span class="operator">=</span> b.key1)</span><br><span class="line"><span class="comment">--由于联接中仅涉及b的key1列，因此被转换为1个MR作业来执行</span></span><br><span class="line"><span class="comment">--并且表a和b连接的结果被缓冲在reducer的内存中</span></span><br><span class="line"><span class="comment">--然后，对于从c中检索的每一行，将使用缓冲的行来计算联接。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> a.val, b.val, c.val <span class="keyword">FROM</span> a</span><br><span class="line"><span class="keyword">JOIN</span> b <span class="keyword">ON</span> (a.key <span class="operator">=</span> b.key1)</span><br><span class="line"><span class="keyword">JOIN</span> c <span class="keyword">ON</span> (c.key <span class="operator">=</span> b.key2)</span><br><span class="line"><span class="comment">--计算涉及两个MR作业。其中的第一个将a与b连接起来</span></span><br><span class="line"><span class="comment">--并缓冲a的值，同时在reducer中流式传输b</span></span><br><span class="line"><span class="comment">--在第二个MR作业中，将缓冲第一个连接的结果，同时将c的值通过reducer流式传输。</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>更多信息参阅官方文档 <a target="_blank" rel="noopener" href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Joins">https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Joins</a></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>如果觉得文章写得不错或对您有帮助，请我喝杯柠檬茶吧！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Mr Fu
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDQL.html" title="Hive常用SQL之DQL">https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDQL.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Hive/" rel="tag"># Hive</a>
+          
+            <a href="/tags/SQL/" rel="tag"># SQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDML.html" rel="next" title="Hive常用SQL之DML">
+                <i class="fa fa-chevron-left"></i> Hive常用SQL之DML
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.papwin.com/" title="潘岸平的獨立博客" target="_blank">潘岸平的獨立博客</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E6%9F%A5%E8%AF%A2%EF%BC%88%E5%88%86%E5%8C%BA%E8%A3%81%E5%89%AA%EF%BC%89"><span class="nav-text">分区查询（分区裁剪）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F"><span class="nav-text">排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#order-by"><span class="nav-text">order by</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cluster-by"><span class="nav-text">cluster by</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#distribute-by-sort-by"><span class="nav-text">distribute by + sort by</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#union-%E8%81%94%E5%90%88%E6%9F%A5%E8%AF%A2"><span class="nav-text">union 联合查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Common-Table-Expressions-CTE"><span class="nav-text">Common Table Expressions (CTE)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#join-%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="nav-text">join 连接查询</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr Fu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://ovolol.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDQL.html';
+          this.page.identifier = '大数据开发/Hive常用SQL之DQL.html';
+          this.page.title = 'Hive常用SQL之DQL';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://ovolol.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
