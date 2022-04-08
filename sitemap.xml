@@ -137,13 +137,6 @@
 
   
   <url>
-    <loc>https://ovo.lol/tags/Hadoop/</loc>
-    <lastmod>2022-04-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://ovo.lol/tags/Hive/</loc>
     <lastmod>2022-04-08</lastmod>
     <changefreq>weekly</changefreq>
@@ -152,6 +145,13 @@
   
   <url>
     <loc>https://ovo.lol/tags/SQL/</loc>
+    <lastmod>2022-04-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://ovo.lol/tags/Hadoop/</loc>
     <lastmod>2022-04-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
