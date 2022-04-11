@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ovo.lol","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="数据压缩Hive的默认执行引擎是MapReduce，因此通常所说的Hive压缩指的是MapReduce中的压缩。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hive中的数据压缩与数据存储格式">
+<meta property="og:url" content="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8E%8B%E7%BC%A9%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F.html">
+<meta property="og:site_name" content="黑洞">
+<meta property="og:description" content="数据压缩Hive的默认执行引擎是MapReduce，因此通常所说的Hive压缩指的是MapReduce中的压缩。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2022/04/11/aquVwDtyoWNImJg.png">
+<meta property="og:image" content="https://s2.loli.net/2022/04/11/7rnHhaZ3ld8kzIt.png">
+<meta property="og:image" content="https://s2.loli.net/2022/04/11/VvyRlrc1AwM3iQH.png">
+<meta property="article:published_time" content="2022-04-11T01:12:47.000Z">
+<meta property="article:modified_time" content="2022-04-11T01:18:45.127Z">
+<meta property="article:author" content="Mr Fu">
+<meta property="article:tag" content="Hive">
+<meta property="article:tag" content="SQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/04/11/aquVwDtyoWNImJg.png">
+
+<link rel="canonical" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8E%8B%E7%BC%A9%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Hive中的数据压缩与数据存储格式 | 黑洞</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">黑洞</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">这里藏着一些独特的想法</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8E%8B%E7%BC%A9%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mr Fu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黑洞">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hive中的数据压缩与数据存储格式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-04-11 09:12:47 / 修改时间：09:18:45" itemprop="dateCreated datePublished" datetime="2022-04-11T09:12:47+08:00">2022-04-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">大数据开发</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8E%8B%E7%BC%A9%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F.html#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="大数据开发/Hive中的数据压缩与数据存储格式.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="数据压缩"><a href="#数据压缩" class="headerlink" title="数据压缩"></a>数据压缩</h2><p>Hive的默认执行引擎是MapReduce，因此通常所说的Hive压缩指的是MapReduce中的压缩。</p>
+<span id="more"></span>
+
+<p>优点：</p>
+<ul>
+<li>减少存储磁盘空间，降低单节点的磁盘 IO。</li>
+<li>由于压缩后的数据占用的带宽更少，因此可以加快数据在 Hadoop 集群流动<br>的速度，减少网络传输带宽。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>需要花费额外的时间、CPU和内存资源，做压缩和解压缩计算。</li>
+</ul>
+<p><img data-src="https://s2.loli.net/2022/04/11/aquVwDtyoWNImJg.png" alt="mr-compress.jpg"></p>
+<ol>
+<li>需要分析处理的数据在进入map 前可以压缩，然后解压处理</li>
+<li>map 处理完成后的输出可以压缩，这样可以减少网络 I&#x2F;O(reduce 通常和 map 不在同一节点上)</li>
+<li>reduce 拷贝压缩的数据后进行解压，处理完成后可以压缩存储在 hdfs 上，以减少磁盘占用量。</li>
+</ol>
+<p><img data-src="https://s2.loli.net/2022/04/11/7rnHhaZ3ld8kzIt.png" alt="mr-compress-detail.jpg"></p>
+<h3 id="Hadoop-中支持的压缩算法"><a href="#Hadoop-中支持的压缩算法" class="headerlink" title="Hadoop 中支持的压缩算法"></a>Hadoop 中支持的压缩算法</h3><table>
+<thead>
+<tr>
+<th>压缩格式</th>
+<th>压缩格式所在的类</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Zlib</td>
+<td>org.apache.hadoop.io.compress.DefaultCodec</td>
+</tr>
+<tr>
+<td>Gzip</td>
+<td>org.apache.hadoop.io.compress.GzipCodec</td>
+</tr>
+<tr>
+<td>Bzip2</td>
+<td>org.apache.hadoop.io.compress.BZip2Codec</td>
+</tr>
+<tr>
+<td>Lzo</td>
+<td>com.hadoop.compression.lzo.LzoCodec</td>
+</tr>
+<tr>
+<td>Lz4</td>
+<td>org.apache.hadoop.io.compress.Lz4Codec</td>
+</tr>
+<tr>
+<td><strong>Snappy</strong></td>
+<td><strong>org.apache.hadoop.io.compress.SnappyCodec</strong></td>
+</tr>
+</tbody></table>
+<p><strong>推荐使用谷歌推出的Snappy压缩算法</strong></p>
+<h3 id="设置压缩参数"><a href="#设置压缩参数" class="headerlink" title="设置压缩参数"></a>设置压缩参数</h3><blockquote>
+<p>注意： 本质是MapReduce的压缩</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 开启 hive 中间传输数据压缩功能 也就是map的输出压缩</span></span><br><span class="line"><span class="keyword">set</span> hive.exec.compress.intermediate<span class="operator">=</span><span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 开启 mapreduce 中 map 输出压缩功能</span></span><br><span class="line"><span class="keyword">set</span> mapreduce.map.output.compress<span class="operator">=</span><span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 设置 mapreduce 中 map 输出数据的压缩方式（算法）</span></span><br><span class="line"><span class="keyword">set</span> mapreduce.map.output.compress.codec<span class="operator">=</span>org.apache.hadoop.io.compress.SnappyCodec;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 设置Hive的最终输出压缩 也就是Reduce输出压缩</span></span><br><span class="line"><span class="keyword">set</span> hive.exec.compress.output<span class="operator">=</span><span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 开启 mapreduce 最终输出数据压缩</span></span><br><span class="line"><span class="keyword">set</span> mapreduce.output.fileoutputformat.compress<span class="operator">=</span><span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 设置 mapreduce 最终数据输出压缩方式</span></span><br><span class="line"><span class="keyword">set</span> mapreduce.output.fileoutputformat.compress.codec<span class="operator">=</span>org.apache.hadoop.io.compress.SnappyCodec;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 设置 mapreduce 最终数据输出压缩为 块压缩 还可以指定RECORD</span></span><br><span class="line"><span class="keyword">set</span> mapreduce.output.fileoutputformat.compress.type<span class="operator">=</span>BLOCK;  </span><br></pre></td></tr></table></figure>
+
+<p>设置完毕后，使用<code>load</code>语句加载并不能压缩源数据，可以使用ctas语句，因为它经过MapReduce。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--设置完毕之后 只有当HiveSQL底层通过MapReduce程序执行 才会涉及压缩</span></span><br><span class="line"><span class="comment">--已有普通格式的表</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student;</span><br><span class="line"></span><br><span class="line"><span class="comment">--使用ctas语句创建新表 此时 student_snappy 这个表就是被压缩的</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> student_snappy <span class="keyword">as</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="数据存储格式"><a href="#数据存储格式" class="headerlink" title="数据存储格式"></a>数据存储格式</h2><h3 id="列式存储和行式存储"><a href="#列式存储和行式存储" class="headerlink" title="列式存储和行式存储"></a>列式存储和行式存储</h3><p>逻辑表中的数据，最终需要落到磁盘上以文件的形式存储。有两种常见的存储形式：行式存储和列式存储。</p>
+<p><img data-src="https://s2.loli.net/2022/04/11/VvyRlrc1AwM3iQH.png" alt="row-col-layout.jpg"></p>
+<h4 id="行式存储"><a href="#行式存储" class="headerlink" title="行式存储"></a>行式存储</h4><ul>
+<li><p>优点：</p>
+<ul>
+<li>相关的数据是保存在一起，比较符合面向对象的思维，因为一行数据就是一条记录。</li>
+<li>这种存储格式比较方便进行 INSERT&#x2F;UPDATE 操作。</li>
+</ul>
+</li>
+<li><p>缺点：</p>
+<ul>
+<li>如果查询只涉及某几个列，它会把整行数据都读取出来，不能跳过不必要的列读取。当然数据比较少，一般没啥问题，如果数据量比较大就比较影响性能。</li>
+<li>由于每一行中，列的数据类型不一致，导致不容易获得一个极高的压缩比，也就是空间利用率不高。</li>
+<li>不是所有的列都适合作为索引。</li>
+</ul>
+</li>
+</ul>
+<h4 id="列式存储"><a href="#列式存储" class="headerlink" title="列式存储"></a>列式存储</h4><ul>
+<li><p>优点：</p>
+<ul>
+<li>查询时，只有涉及到的列才会被查询，不会把所有列都查询出来，即可以跳过不必要的列查询。</li>
+<li>高效的压缩率，不仅节省储存空间也节省计算内存和CPU。</li>
+<li>任何列都可以作为索引。</li>
+</ul>
+</li>
+<li><p>缺点：</p>
+<ul>
+<li>INSERT&#x2F;UPDATE 很麻烦或者不方便。</li>
+<li>不适合扫描小量的数据。</li>
+</ul>
+</li>
+</ul>
+<p>Hive 支持的存储数的格式主要有：TEXTFILE（行式存储） 、SEQUENCEFILE（行式存储）、ORC（列式存储）、PARQUET（列式存储）。</p>
+<p>对于数据分析而言，列式存储显然更符合我们的工作场景。因此，接下来重点讲一下ORC与压缩的共同使用。</p>
+<h2 id="存储格式和压缩"><a href="#存储格式和压缩" class="headerlink" title="存储格式和压缩"></a>存储格式和压缩</h2><p>创建ORC表文件</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> log_orc(</span><br><span class="line">    track_time string,</span><br><span class="line">    url string,</span><br><span class="line">    session_id string,</span><br><span class="line">    referer string,</span><br><span class="line">    ip string,</span><br><span class="line">    end_user_id string,</span><br><span class="line">    city_id string</span><br><span class="line">)</span><br><span class="line"><span class="type">ROW</span> FORMAT DELIMITED FIELDS TERMINATED <span class="keyword">BY</span> <span class="string">&#x27;\t&#x27;</span></span><br><span class="line">STORED <span class="keyword">AS</span> orc ; </span><br><span class="line"><span class="comment">-- 默认使用Zlib压缩</span></span><br></pre></td></tr></table></figure>
+
+<p>创建非压缩的ORC表文件</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> log_orc_none(</span><br><span class="line">    track_time string,</span><br><span class="line">    url string,</span><br><span class="line">    session_id string,</span><br><span class="line">    referer string,</span><br><span class="line">    ip string,</span><br><span class="line">    end_user_id string,</span><br><span class="line">    city_id string</span><br><span class="line">)</span><br><span class="line"><span class="type">ROW</span> FORMAT DELIMITED FIELDS TERMINATED <span class="keyword">BY</span> <span class="string">&#x27;\t&#x27;</span></span><br><span class="line">STORED <span class="keyword">AS</span> orc tblproperties (&quot;orc.compress&quot;<span class="operator">=</span>&quot;NONE&quot;);</span><br><span class="line"><span class="comment">-- 设置为NONE时不使用任何压缩算法</span></span><br></pre></td></tr></table></figure>
+
+<p>创建使用Snappy压缩的ORC表文件</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> log_orc_snappy(</span><br><span class="line">    track_time string,</span><br><span class="line">    url string,</span><br><span class="line">    session_id string,</span><br><span class="line">    referer string,</span><br><span class="line">    ip string,</span><br><span class="line">    end_user_id string,</span><br><span class="line">    city_id string</span><br><span class="line">)</span><br><span class="line"><span class="type">ROW</span> FORMAT DELIMITED FIELDS TERMINATED <span class="keyword">BY</span> <span class="string">&#x27;\t&#x27;</span></span><br><span class="line">STORED <span class="keyword">AS</span> orc tblproperties (&quot;orc.compress&quot;<span class="operator">=</span>&quot;SNAPPY&quot;);</span><br><span class="line"><span class="comment">-- 使用Snappy算法压缩</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>在实际的项目开发当中，hive表的数据存储格式一般选择ORC或PARQUET，压缩方式一般选择Snappy。</strong></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>如果觉得文章写得不错或对您有帮助，请我喝杯柠檬茶吧！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Mr Fu 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Mr Fu
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8E%8B%E7%BC%A9%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F.html" title="Hive中的数据压缩与数据存储格式">https://ovo.lol/大数据开发/Hive中的数据压缩与数据存储格式.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hive/" rel="tag"># Hive</a>
+              <a href="/tags/SQL/" rel="tag"># SQL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E6%97%A5%E8%AE%B0/%E5%91%A8%E8%AE%B02.html" rel="prev" title="周记2">
+      <i class="fa fa-chevron-left"></i> 周记2
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8E%8B%E7%BC%A9"><span class="nav-number">1.</span> <span class="nav-text">数据压缩</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hadoop-%E4%B8%AD%E6%94%AF%E6%8C%81%E7%9A%84%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">Hadoop 中支持的压缩算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%8E%8B%E7%BC%A9%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">设置压缩参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">数据存储格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%97%E5%BC%8F%E5%AD%98%E5%82%A8%E5%92%8C%E8%A1%8C%E5%BC%8F%E5%AD%98%E5%82%A8"><span class="nav-number">2.1.</span> <span class="nav-text">列式存储和行式存储</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%8C%E5%BC%8F%E5%AD%98%E5%82%A8"><span class="nav-number">2.1.1.</span> <span class="nav-text">行式存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%97%E5%BC%8F%E5%AD%98%E5%82%A8"><span class="nav-number">2.1.2.</span> <span class="nav-text">列式存储</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F%E5%92%8C%E5%8E%8B%E7%BC%A9"><span class="nav-number">3.</span> <span class="nav-text">存储格式和压缩</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Mr Fu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.papwin.com/" title="https:&#x2F;&#x2F;blog.papwin.com&#x2F;" rel="noopener" target="_blank">潘岸平的獨立博客</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr Fu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://ovolol.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8E%8B%E7%BC%A9%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F.html";
+    this.page.identifier = "大数据开发/Hive中的数据压缩与数据存储格式.html";
+    this.page.title = "Hive中的数据压缩与数据存储格式";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://ovolol.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>
