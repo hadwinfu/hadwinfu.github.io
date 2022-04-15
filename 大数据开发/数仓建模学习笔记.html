@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ovo.lol","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="概念什么是数据仓库存储数据的仓库，主要是用于存储过去既定发生的历史数据，对这些数据进行数据分析的操作，从而对未来提供决策支持。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数仓建模学习笔记">
+<meta property="og:url" content="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%95%B0%E4%BB%93%E5%BB%BA%E6%A8%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html">
+<meta property="og:site_name" content="黑洞">
+<meta property="og:description" content="概念什么是数据仓库存储数据的仓库，主要是用于存储过去既定发生的历史数据，对这些数据进行数据分析的操作，从而对未来提供决策支持。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-15T08:34:08.000Z">
+<meta property="article:modified_time" content="2022-04-15T16:04:17.993Z">
+<meta property="article:author" content="Mr Fu">
+<meta property="article:tag" content="Hive">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%95%B0%E4%BB%93%E5%BB%BA%E6%A8%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>数仓建模学习笔记 | 黑洞</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">黑洞</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">这里藏着一些独特的想法</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%95%B0%E4%BB%93%E5%BB%BA%E6%A8%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mr Fu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黑洞">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数仓建模学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-15 16:34:08" itemprop="dateCreated datePublished" datetime="2022-04-15T16:34:08+08:00">2022-04-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-04-16 00:04:17" itemprop="dateModified" datetime="2022-04-16T00:04:17+08:00">2022-04-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">大数据开发</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%95%B0%E4%BB%93%E5%BB%BA%E6%A8%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="大数据开发/数仓建模学习笔记.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="什么是数据仓库"><a href="#什么是数据仓库" class="headerlink" title="什么是数据仓库"></a>什么是数据仓库</h3><p>存储数据的仓库，主要是用于存储过去既定发生的历史数据，对这些数据进行数据分析的操作，从而对未来提供决策支持。</p>
+<span id="more"></span>
+
+<h3 id="数据仓库最大的特点"><a href="#数据仓库最大的特点" class="headerlink" title="数据仓库最大的特点"></a>数据仓库最大的特点</h3><p>既不生产数据，也不消耗数据，数据来源于各个数据源。</p>
+<h3 id="数据仓库的四大特征"><a href="#数据仓库的四大特征" class="headerlink" title="数据仓库的四大特征"></a>数据仓库的四大特征</h3><ol>
+<li>面向于主题：分析的内容是什么，什么就是我们的主题。<br></li>
+<li>集成性：数据是来源于各个数据源，将各个数据源数据汇总在一起。<br></li>
+<li>非易失性（稳定性）：存储在数据仓库中数据都是过去既定发生数据，这些数据都是相对比较稳定的数据，不会发生改变。<br></li>
+<li>时变性：随着的推移，原有的分析手段以及原有数据可能都会出现变化（分析手动更换，以及数据新增）。</li>
+</ol>
+<h3 id="ETL是什么"><a href="#ETL是什么" class="headerlink" title="ETL是什么"></a>ETL是什么</h3><p>ETL是三个英文单词的缩写。</p>
+<p>E代表<code>Extra</code><br>T代表<code>Transform</code><br>L代表<code>Load</code></p>
+<p>翻译成中文分别是抽取、转换、加载。</p>
+<p>数据从数据源将数据导入到ODS层，以及从ODS层将数据抽取出来，对数据进行转换处理工作，最终将数据加载到DW层，然后DW层对数据进行统计分析，将统计分析后的数据导入到DA层，整个全过程都是属于ETL范畴。</p>
+<h3 id="数据仓库-和-数据库的区别"><a href="#数据仓库-和-数据库的区别" class="headerlink" title="数据仓库 和 数据库的区别"></a>数据仓库 和 数据库的区别</h3><p>数据库（OLTP）：面向于事务（业务）的，主要是用于捕获数据，主要是存储的最近一段时间的业务数据，交互性强 一般不允许出现数据冗余。</p>
+<p>数据仓库（OLAP）：面向于分析（主题）的，主要是用于分析数据，主要是存储的过去历史数据，交互性较弱 可以允许出现一定的冗余。</p>
+<h2 id="数仓建模"><a href="#数仓建模" class="headerlink" title="数仓建模"></a>数仓建模</h2><p>数仓建模指的规定如何在hive中构建表，数仓建模中主要提供两种理论来进行数仓建模操作：三范式建模和维度建模理论。</p>
+<ul>
+<li>三范式建模：主要是存在关系型数据库建模方案上，主要规定了比如建表的每一个表都应该有一个主键，数据要经历的避免冗余发生等等<br></li>
+<li>维度建模：主要是存在分析性数据库建模方案上，主要一切以分析为目标，只要是利于分析的建模都行，允许出现一定的冗余，表也可以没有主键。</li>
+</ul>
+<p>维度建模的两个核心概念：事实表和维度表。</p>
+<h2 id="事实表"><a href="#事实表" class="headerlink" title="事实表"></a>事实表</h2><p>事实表一般指的就是分析主题所对应的表，每一条数据用于描述一个具体的事实信息，这些表一般都是一坨主键（外键）和描述事实字段的聚集。</p>
+<p>例如： 比如说统计2020年度订单销售情况 </p>
+<p>主题：订单<br>相关表：订单表（事实表）<br>相关字段：订单的ID、商品id、单价、购买的数量、下单时间、用户id、商家id、省份id、市区id、县id、商品价格……</p>
+<p>进行统计分析的时候，可以结合商品维度、用户维度、商家维度、地区维度进行统计分析。在进行统计分析的时候，可能需要关联到其他的表（维度表）。</p>
+<blockquote>
+<p>注意：一般需要计算的指标字段所在表，都是事实表。</p>
+</blockquote>
+<p>事实表的分类：</p>
+<ol>
+<li>事务事实表：保存的是最原子的数据，也称“原子事实表”或“交易事实表”。沟通中常说的事实表，大多指的是事务事实表。<br></li>
+<li>周期快照事实表：周期快照事实表以具有规律性的、可预见的时间间隔来记录事实，时间间隔如每天、每月、每年等等。周期表由事务表加工产生。<br></li>
+<li>累计快照事实表：完全覆盖一个事务或产品的生命周期的时间跨度，它通常具有多个日期字段，用来记录整个生命周期中的关键时间点。</li>
+</ol>
+<h2 id="维度表"><a href="#维度表" class="headerlink" title="维度表"></a>维度表</h2><p>在对事实表进行统计分析的时候，基于某一个维度需要用到的表就是维度表。</p>
+<p>维度表并不一定存在，但是维度是一定存在：</p>
+<p>比如：根据用户维度进行统计，如果在事实表只存储了用户id，此时需要关联用户表，这个时候就是维度表。</p>
+<p>比如：根据用户维度进行统计，如果在事实表不仅仅存储了用户id，还存储用户名称，这个时候有用户维度，但是不需要用户表的参与，意味着没有这个维度表。</p>
+<h3 id="维度表的分类"><a href="#维度表的分类" class="headerlink" title="维度表的分类"></a>维度表的分类</h3><p>高基数维度表：指的表中的数据量是比较庞大的，而且数据也在发送的变化。例如：商品表，用户表。</p>
+<p>低基数维度表：指的表中的数据量不是特别多，一般在几十条到几千条左右，而且数据相对比较稳定。例如：日期表，配置表，区域表。</p>
+<h2 id="维度分析"><a href="#维度分析" class="headerlink" title="维度分析"></a>维度分析</h2><p>维度分析：针对某一个主题，可以从不同的维度的进行统计分析，从而得出各种指标的过程。</p>
+<p>维度一般指的分析的角度，看待一个问题的时候，可以多个角度来看待，而这些角度指的就是维度。</p>
+<p>比如：时间、地域、商品、来源、用户……</p>
+<p>维度的分类：</p>
+<ul>
+<li>定性维度：指的计算每天、每月、各个的维度，一般来说定性维度的字段都是放置在<code>group by</code>中。<br></li>
+<li>定量维度：指的统计某一个具体的维度或者某一个范围下信息。比如说：2020年度订单额，统计20~30岁区间人群的人数 ，一般来说这种维度的字段都是放置在<code>where</code>中。</li>
+</ul>
+<p>维度的分层和分级：本质上对维度进行细分的过程。</p>
+<p>时间维度：</p>
+<ul>
+<li>按年  </li>
+<li>按季度</li>
+<li>按月份</li>
+<li>按天</li>
+<li>按每个小时</li>
+</ul>
+<p>地域维度：</p>
+<ul>
+<li>按省份</li>
+<li>按市</li>
+<li>按县</li>
+</ul>
+<p>从实际分析中，统计的层级越多，意味统计的越细化，设置维度内容越多。</p>
+<p>维度的下钻和上卷：以某一个维度为基准，往细化统计的过程称为下钻，往粗粒度称为上卷。</p>
+<p>比如： 按照天统计，如果还需要统计出小时，指的就是下钻；如果还需要统计季度、月、年，称为上卷统计。</p>
+<p>在实际分析中，下钻和上卷意味统计的维度层次变得更多了。</p>
+<h3 id="什么是指标"><a href="#什么是指标" class="headerlink" title="什么是指标"></a>什么是指标</h3><p>指标是衡量事务发展的标准，就是度量值。</p>
+<p>常见的度量函数：<code>count（）、sum（）、max（）、min（）、avg（）</code></p>
+<p>还有一些比例指标（转化率、流失率、同比）。</p>
+<p>指标的分类：</p>
+<ul>
+<li>绝对指标： 计算具体的值指标。总额、最高、平均。</li>
+<li>相对指标： 计算比率问题的指标。转化率、流失率、同比。</li>
+</ul>
+<h2 id="维度建模的三种模型"><a href="#维度建模的三种模型" class="headerlink" title="维度建模的三种模型"></a>维度建模的三种模型</h2><ul>
+<li>星形模型：只有一个事实表，那么也就意味着只有一个分析的主题，在事实表的周围围绕了多个维度表 维度表与维度表之间没有任何的依赖。它是数仓发展初期最容易产生模型。<br></li>
+<li>雪花模型：只有一个事实表，那么也就意味着只有一个分析的主题，在事实表的周围围绕了多个维度表，维度表可以接着关联其他的维度表。<strong>但是它属于畸形模型！这种模型一旦大量出现，对后期维护是非常繁琐，同时如果依赖层次越多，SQL分析的难度也会加大。在实际生产中，建议尽量减少这种模型产生。</strong><br></li>
+<li>星座模型：有多个事实表，意味着有了多个分析的主题，在事实表的周围围绕了多个维度表，多个事实表在条件符合的情况下，可以共享维度表。它是数仓发展中后期最容易产生模型。</li>
+</ul>
+<h2 id="缓慢渐变维"><a href="#缓慢渐变维" class="headerlink" title="缓慢渐变维"></a>缓慢渐变维</h2><p>在离线数据分析中，如果一个维度的数据是随时间逐渐变化的，那么这个维度就属于缓慢渐变维。</p>
+<p>在实际开发中，一般使用<strong>拉链表</strong>来维护。不删除、不修改已存在的数据，当数据发生变更后，会添加一条新的版本记录的数据。在建表的时候，会多加两个字段（起始时间，截止时间），通过这两个字段来标记每条数据的起止时间。</p>
+<ul>
+<li>好处：适用于保存多个历史版本，方便维护实现。</li>
+<li>弊端：会造成数据冗余情况，导致磁盘占用率提升。但是，我们可以压缩呀！</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>如果觉得文章写得不错或对您有帮助，请我喝杯柠檬茶吧！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Mr Fu 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Mr Fu
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%95%B0%E4%BB%93%E5%BB%BA%E6%A8%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html" title="数仓建模学习笔记">https://ovo.lol/大数据开发/数仓建模学习笔记.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hive/" rel="tag"># Hive</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8E%8B%E7%BC%A9%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F.html" rel="prev" title="Hive中的数据压缩与数据存储格式">
+      <i class="fa fa-chevron-left"></i> Hive中的数据压缩与数据存储格式
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93"><span class="nav-number">1.1.</span> <span class="nav-text">什么是数据仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E6%9C%80%E5%A4%A7%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">1.2.</span> <span class="nav-text">数据仓库最大的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E7%9A%84%E5%9B%9B%E5%A4%A7%E7%89%B9%E5%BE%81"><span class="nav-number">1.3.</span> <span class="nav-text">数据仓库的四大特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ETL%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.4.</span> <span class="nav-text">ETL是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93-%E5%92%8C-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.5.</span> <span class="nav-text">数据仓库 和 数据库的区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E4%BB%93%E5%BB%BA%E6%A8%A1"><span class="nav-number">2.</span> <span class="nav-text">数仓建模</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%AE%9E%E8%A1%A8"><span class="nav-number">3.</span> <span class="nav-text">事实表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%B4%E5%BA%A6%E8%A1%A8"><span class="nav-number">4.</span> <span class="nav-text">维度表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%B4%E5%BA%A6%E8%A1%A8%E7%9A%84%E5%88%86%E7%B1%BB"><span class="nav-number">4.1.</span> <span class="nav-text">维度表的分类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%B4%E5%BA%A6%E5%88%86%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text">维度分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%8C%87%E6%A0%87"><span class="nav-number">5.1.</span> <span class="nav-text">什么是指标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1%E7%9A%84%E4%B8%89%E7%A7%8D%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.</span> <span class="nav-text">维度建模的三种模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E6%85%A2%E6%B8%90%E5%8F%98%E7%BB%B4"><span class="nav-number">7.</span> <span class="nav-text">缓慢渐变维</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Mr Fu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.papwin.com/" title="https:&#x2F;&#x2F;blog.papwin.com&#x2F;" rel="noopener" target="_blank">潘岸平的獨立博客</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr Fu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://ovolol.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%95%B0%E4%BB%93%E5%BB%BA%E6%A8%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html";
+    this.page.identifier = "大数据开发/数仓建模学习笔记.html";
+    this.page.title = "数仓建模学习笔记";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://ovolol.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>
