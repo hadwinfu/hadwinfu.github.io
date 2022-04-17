@@ -20,19 +20,27 @@
     var CONFIG = {"hostname":"ovo.lol","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="关于生活我真的很讨厌我妈帮我收拾东西，每次帮我收拾完我都不知道自己的东西放哪了，她也不跟我说。虽然把房间弄整洁是个好习惯，但是每个人都有每个人的生活方式，我这属于无序中有序，虽然乱了一些，但要找的时候都非常顺手。她把自己的习惯强加给我，实在不能接受。 原本消停的疫情又在上海严重了起来，同时也在不断向周边扩散。抖音上爆出各种传闻，有的真有的假。尽管有“官方”的“辟谣”，但我始终相信有些事不是空穴来风">
+  <meta name="description" content="什么是拉链表 拉链表是针对数据仓库设计中表存储数据的方式而定义的，顾名思义，所谓拉链，就是记录历史。记录一个事物从开始，一直到当前状态的所有变化的信息。Reference: https:&#x2F;&#x2F;cloud.tencent.com&#x2F;developer&#x2F;article&#x2F;1752848  拉链表是一种维护缓慢渐变维的方式，可以让我们方便地查看某些维度在历史阶段的状态。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="上周小结">
-<meta property="og:url" content="https://ovo.lol/%E6%97%A5%E8%AE%B0/%E4%B8%8A%E5%91%A8%E5%B0%8F%E7%BB%93.html">
+<meta property="og:title" content="拉链表的实现原理">
+<meta property="og:url" content="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%8B%89%E9%93%BE%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.html">
 <meta property="og:site_name" content="黑洞">
-<meta property="og:description" content="关于生活我真的很讨厌我妈帮我收拾东西，每次帮我收拾完我都不知道自己的东西放哪了，她也不跟我说。虽然把房间弄整洁是个好习惯，但是每个人都有每个人的生活方式，我这属于无序中有序，虽然乱了一些，但要找的时候都非常顺手。她把自己的习惯强加给我，实在不能接受。 原本消停的疫情又在上海严重了起来，同时也在不断向周边扩散。抖音上爆出各种传闻，有的真有的假。尽管有“官方”的“辟谣”，但我始终相信有些事不是空穴来风">
+<meta property="og:description" content="什么是拉链表 拉链表是针对数据仓库设计中表存储数据的方式而定义的，顾名思义，所谓拉链，就是记录历史。记录一个事物从开始，一直到当前状态的所有变化的信息。Reference: https:&#x2F;&#x2F;cloud.tencent.com&#x2F;developer&#x2F;article&#x2F;1752848  拉链表是一种维护缓慢渐变维的方式，可以让我们方便地查看某些维度在历史阶段的状态。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-04-06T05:03:34.000Z">
-<meta property="article:modified_time" content="2022-04-06T05:04:09.396Z">
+<meta property="og:image" content="https://s2.loli.net/2022/04/18/7VBjwHQfMlIq381.jpg">
+<meta property="og:image" content="https://s2.loli.net/2022/04/18/8jgNKDpHSULEqQ7.jpg">
+<meta property="og:image" content="https://s2.loli.net/2022/04/18/N7z4KRCIj9QOkFt.jpg">
+<meta property="og:image" content="https://s2.loli.net/2022/04/18/TgFoM8a9WtNZVAe.jpg">
+<meta property="og:image" content="https://s2.loli.net/2022/04/18/6vziJqawrPYmx7X.jpg">
+<meta property="article:published_time" content="2022-04-17T22:24:42.000Z">
+<meta property="article:modified_time" content="2022-04-17T22:40:46.093Z">
 <meta property="article:author" content="Mr Fu">
+<meta property="article:tag" content="Hive">
+<meta property="article:tag" content="SQL">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/04/18/7VBjwHQfMlIq381.jpg">
 
-<link rel="canonical" href="https://ovo.lol/%E6%97%A5%E8%AE%B0/%E4%B8%8A%E5%91%A8%E5%B0%8F%E7%BB%93.html">
+<link rel="canonical" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%8B%89%E9%93%BE%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.html">
 
 
 <script id="page-configurations">
@@ -45,7 +53,7 @@
   };
 </script>
 
-  <title>上周小结 | 黑洞</title>
+  <title>拉链表的实现原理 | 黑洞</title>
   
 
 
@@ -166,7 +174,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E6%97%A5%E8%AE%B0/%E4%B8%8A%E5%91%A8%E5%B0%8F%E7%BB%93.html">
+    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%8B%89%E9%93%BE%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -179,7 +187,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          上周小结
+          拉链表的实现原理
         </h1>
 
         <div class="post-meta">
@@ -190,7 +198,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-04-06 13:03:34 / 修改时间：13:04:09" itemprop="dateCreated datePublished" datetime="2022-04-06T13:03:34+08:00">2022-04-06</time>
+              <time title="创建时间：2022-04-18 06:24:42 / 修改时间：06:40:46" itemprop="dateCreated datePublished" datetime="2022-04-18T06:24:42+08:00">2022-04-18</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -198,7 +206,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%97%A5%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">日记</span></a>
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">大数据开发</span></a>
                 </span>
             </span>
 
@@ -211,8 +219,8 @@
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/%E6%97%A5%E8%AE%B0/%E4%B8%8A%E5%91%A8%E5%B0%8F%E7%BB%93.html#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="日记/上周小结.html" itemprop="commentCount"></span>
+    <a title="disqus" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%8B%89%E9%93%BE%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.html#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="大数据开发/拉链表的实现原理.html" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -227,15 +235,30 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="关于生活"><a href="#关于生活" class="headerlink" title="关于生活"></a>关于生活</h2><p>我真的很讨厌我妈帮我收拾东西，每次帮我收拾完我都不知道自己的东西放哪了，她也不跟我说。虽然把房间弄整洁是个好习惯，但是每个人都有每个人的生活方式，我这属于无序中有序，虽然乱了一些，但要找的时候都非常顺手。她把自己的习惯强加给我，实在不能接受。</p>
-<p>原本消停的疫情又在上海严重了起来，同时也在不断向周边扩散。抖音上爆出各种传闻，有的真有的假。尽管有“官方”的“辟谣”，但我始终相信有些事不是空穴来风。我看到的是人民面对现实的无奈与愤怒；看到的是“某些人”不作为；看到的是“宁错杀，不放过”，毫无人性可言的规则。难以想象若真是生化危机，又有几个人能活下来，哪些人能活下来。他们终究是没有能力去制定一个完善的疾控政策，光凭一个漏洞百出的狗屁健康码，根本解决不了什么。</p>
-<p>他们，恨不得人们把XX码当作狗牌挂在胸前。</p>
+        <h2 id="什么是拉链表"><a href="#什么是拉链表" class="headerlink" title="什么是拉链表"></a>什么是拉链表</h2><blockquote>
+<p>拉链表是针对数据仓库设计中表存储数据的方式而定义的，顾名思义，所谓拉链，就是记录历史。<br>记录一个事物从开始，一直到当前状态的所有变化的信息。<br>Reference: <a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1752848">https://cloud.tencent.com/developer/article/1752848</a></p>
+</blockquote>
+<p>拉链表是一种维护<strong>缓慢渐变维</strong>的方式，可以让我们方便地查看某些维度在历史阶段的状态。</p>
 <span id="more"></span>
-<hr>
-<h2 id="关于学习"><a href="#关于学习" class="headerlink" title="关于学习"></a>关于学习</h2><p>上周的学习效率感觉变低了，一来是课程知识密度的提高，许多知识点根本记不过来，不得不放慢学习的速度。二来是上周课程内容的理论知识大于实操，让我看了两三节就想睡觉。</p>
-<p>上周主要学习了Zookeeper和Hadoop的运行原理，这两个破玩意部署起来真是太麻烦了，以至于我不太想做笔记（纯纯的搬运工）。</p>
-<p>还学习了一点Hive的相关知识，这里我想重点吐槽一下Hive。访问元数据的服务居然还分一代（metaStore）和二代(HS2)。分两代也就算了，HS2还不能直接访问元数据，必须通过间接通过metaStore。间接通过metaStore也就算了，连接命令还得写成<code>!connect jdbc:hive2://node1:10000</code>。我安装的是hive3.X，非要我写个<code>hive2</code>，歧义也太大了吧，就因为我要用二代客户端吗？</p>
-<p>众多复杂的知识点让我不得不成为一个注意细节的男人，希望接下来的学习我能跟得上吧。</p>
+
+<h2 id="拉链表的实现"><a href="#拉链表的实现" class="headerlink" title="拉链表的实现"></a>拉链表的实现</h2><blockquote>
+<p>图床压缩得太狠了，如果看不清可点击放大，也可<a href="/images/%E6%8B%89%E9%93%BE%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0.png?_blank">点我查看</a>高清一图流。</p>
+</blockquote>
+<p>假设业务部门有一张名为<code>t_orders</code>的订单表，我们需要以拉链表的形式存放进数仓。</p>
+<h3 id="全量抽取"><a href="#全量抽取" class="headerlink" title="全量抽取"></a>全量抽取</h3><p>由于数仓中没有原始档案，需要先全量抽取一次，同时在ODS层的表中新建两个拉链字段，它们分别是：<code>start_time</code>和<code>end_time</code>。</p>
+<ul>
+<li><code>start_time | valid_from</code>：代表着抽取日期，也代表着老记录的失效（过期）日期（下文将说明）。</li>
+<li><code>end_time | valid_to</code>：代表着记录的失效（过期）日期。</li>
+</ul>
+<p><img data-src="https://s2.loli.net/2022/04/18/7VBjwHQfMlIq381.jpg" alt="全量抽取.jpg"></p>
+<h3 id="增量抽取"><a href="#增量抽取" class="headerlink" title="增量抽取"></a>增量抽取</h3><p>有了<code>t_orders_ods</code>后，以后的每一天只需要抽取前一天的新增的记录与状态发生改变的记录即可。</p>
+<p><img data-src="https://s2.loli.net/2022/04/18/8jgNKDpHSULEqQ7.jpg" alt="增量抽取.jpg"></p>
+<h3 id="更新与合并"><a href="#更新与合并" class="headerlink" title="更新与合并"></a>更新与合并</h3><p>通过观察上图，不难发现订单编号为2的到货状态（<code>delivered</code>）发生了改变，同时新增了订单编号为5的记录。由于原本在<code>t_orders_ods</code>中订单编号为2的记录失效了，我们需要更新它的过期时间。</p>
+<p><img data-src="https://s2.loli.net/2022/04/18/N7z4KRCIj9QOkFt.jpg" alt="更新过期时间.jpg"></p>
+<p>接着把新记录插入到后面（合并<code>t_orders_ods</code>与<code>t_orders_ods_new</code>）。</p>
+<p><img data-src="https://s2.loli.net/2022/04/18/TgFoM8a9WtNZVAe.jpg" alt="合并新记录.jpg"></p>
+<p><strong>为了防止意外造成数据丢失，我们不能使用上图的语句直接覆写<code>t_orders_ods</code>！应当把结果存入一张临时表，再用<code>insert overwrite</code>覆写<code>t_orders_ods</code>。</strong></p>
+<h2 id="流程总结"><a href="#流程总结" class="headerlink" title="流程总结"></a>流程总结</h2><p><img data-src="https://s2.loli.net/2022/04/18/6vziJqawrPYmx7X.jpg" alt="拉链表流程图.jpg"></p>
 
     </div>
 
@@ -266,7 +289,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://ovo.lol/%E6%97%A5%E8%AE%B0/%E4%B8%8A%E5%91%A8%E5%B0%8F%E7%BB%93.html" title="上周小结">https://ovo.lol/日记/上周小结.html</a>
+    <a href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%8B%89%E9%93%BE%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.html" title="拉链表的实现原理">https://ovo.lol/大数据开发/拉链表的实现原理.html</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -276,6 +299,10 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hive/" rel="tag"># Hive</a>
+              <a href="/tags/SQL/" rel="tag"># SQL</a>
+          </div>
 
         
 
@@ -283,13 +310,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hadoop%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE.html" rel="prev" title="Hadoop基础配置">
-      <i class="fa fa-chevron-left"></i> Hadoop基础配置
+    <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%95%B0%E4%BB%93%E5%BB%BA%E6%A8%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html" rel="prev" title="数仓建模学习笔记">
+      <i class="fa fa-chevron-left"></i> 数仓建模学习笔记
     </a></div>
-      <div class="post-nav-item">
-    <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%B8%B8%E7%94%A8SQL%E4%B9%8BDML.html" rel="next" title="Hive常用SQL之DML">
-      Hive常用SQL之DML <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -355,7 +379,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E7%94%9F%E6%B4%BB"><span class="nav-number">1.</span> <span class="nav-text">关于生活</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%AD%A6%E4%B9%A0"><span class="nav-number">2.</span> <span class="nav-text">关于学习</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%8B%89%E9%93%BE%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">什么是拉链表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%89%E9%93%BE%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">拉链表的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E9%87%8F%E6%8A%BD%E5%8F%96"><span class="nav-number">2.1.</span> <span class="nav-text">全量抽取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E9%87%8F%E6%8A%BD%E5%8F%96"><span class="nav-number">2.2.</span> <span class="nav-text">增量抽取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E4%B8%8E%E5%90%88%E5%B9%B6"><span class="nav-number">2.3.</span> <span class="nav-text">更新与合并</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">流程总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -554,9 +578,9 @@ window.addEventListener('pjax:success', () => {
 </script>
 <script>
   var disqus_config = function() {
-    this.page.url = "https://ovo.lol/%E6%97%A5%E8%AE%B0/%E4%B8%8A%E5%91%A8%E5%B0%8F%E7%BB%93.html";
-    this.page.identifier = "日记/上周小结.html";
-    this.page.title = "上周小结";
+    this.page.url = "https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%8B%89%E9%93%BE%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.html";
+    this.page.identifier = "大数据开发/拉链表的实现原理.html";
+    this.page.title = "拉链表的实现原理";
     };
   NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
     if (window.DISQUS) {
