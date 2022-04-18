@@ -11,15 +11,6 @@
   </url>
   
   <url>
-    <loc>https://ovo.lol/%E6%97%A5%E8%AE%B0/%E5%91%A8%E8%AE%B03.html</loc>
-    
-    <lastmod>2022-04-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%95%B0%E4%BB%93%E5%BB%BA%E6%A8%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html</loc>
     
     <lastmod>2022-04-15</lastmod>
@@ -175,57 +166,57 @@
 
   <url>
     <loc>https://ovo.lol/</loc>
-    <lastmod>2022-04-17</lastmod>
+    <lastmod>2022-04-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   
   <url>
+    <loc>https://ovo.lol/tags/Hadoop/</loc>
+    <lastmod>2022-04-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://ovo.lol/tags/Hive/</loc>
-    <lastmod>2022-04-17</lastmod>
+    <lastmod>2022-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://ovo.lol/tags/SQL/</loc>
-    <lastmod>2022-04-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://ovo.lol/tags/Hadoop/</loc>
-    <lastmod>2022-04-17</lastmod>
+    <lastmod>2022-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://ovo.lol/tags/Zookeeper/</loc>
-    <lastmod>2022-04-17</lastmod>
+    <lastmod>2022-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://ovo.lol/tags/Linux/</loc>
-    <lastmod>2022-04-17</lastmod>
+    <lastmod>2022-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://ovo.lol/tags/Java/</loc>
-    <lastmod>2022-04-17</lastmod>
+    <lastmod>2022-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://ovo.lol/tags/Mysql/</loc>
-    <lastmod>2022-04-17</lastmod>
+    <lastmod>2022-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -234,14 +225,14 @@
   
   <url>
     <loc>https://ovo.lol/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/</loc>
-    <lastmod>2022-04-17</lastmod>
+    <lastmod>2022-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://ovo.lol/categories/%E6%97%A5%E8%AE%B0/</loc>
-    <lastmod>2022-04-17</lastmod>
+    <lastmod>2022-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
