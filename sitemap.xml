@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://ovo.lol/%E6%97%A5%E8%AE%B0/%E5%91%A8%E8%AE%B03.html</loc>
+    
+    <lastmod>2022-04-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%8B%89%E9%93%BE%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.html</loc>
     
     <lastmod>2022-04-17</lastmod>
@@ -166,7 +175,7 @@
 
   <url>
     <loc>https://ovo.lol/</loc>
-    <lastmod>2022-04-18</lastmod>
+    <lastmod>2022-04-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -174,49 +183,49 @@
   
   <url>
     <loc>https://ovo.lol/tags/Hadoop/</loc>
-    <lastmod>2022-04-18</lastmod>
+    <lastmod>2022-04-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://ovo.lol/tags/Hive/</loc>
-    <lastmod>2022-04-18</lastmod>
+    <lastmod>2022-04-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://ovo.lol/tags/SQL/</loc>
-    <lastmod>2022-04-18</lastmod>
+    <lastmod>2022-04-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://ovo.lol/tags/Zookeeper/</loc>
-    <lastmod>2022-04-18</lastmod>
+    <lastmod>2022-04-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://ovo.lol/tags/Linux/</loc>
-    <lastmod>2022-04-18</lastmod>
+    <lastmod>2022-04-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://ovo.lol/tags/Java/</loc>
-    <lastmod>2022-04-18</lastmod>
+    <lastmod>2022-04-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://ovo.lol/tags/Mysql/</loc>
-    <lastmod>2022-04-18</lastmod>
+    <lastmod>2022-04-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -225,14 +234,14 @@
   
   <url>
     <loc>https://ovo.lol/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/</loc>
-    <lastmod>2022-04-18</lastmod>
+    <lastmod>2022-04-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://ovo.lol/categories/%E6%97%A5%E8%AE%B0/</loc>
-    <lastmod>2022-04-18</lastmod>
+    <lastmod>2022-04-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
