@@ -28,7 +28,7 @@
 <meta property="og:description" content="Hive发展至今，已支持大部分Mysql中的语法，基础语法在此不过多赘述。 本文重点记录一些特别的查询语句。 12345678910[WITH CommonTableExpression (, CommonTableExpression)*]SELECT [ALL | DISTINCT] select_expr, select_expr, ...FROM table_reference[WHERE">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-04-08T02:21:43.000Z">
-<meta property="article:modified_time" content="2022-04-11T01:06:19.070Z">
+<meta property="article:modified_time" content="2022-04-21T01:39:26.921Z">
 <meta property="article:author" content="Mr Fu">
 <meta property="article:tag" content="Hive">
 <meta property="article:tag" content="SQL">
@@ -198,7 +198,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-04-11 09:06:19" itemprop="dateModified" datetime="2022-04-11T09:06:19+08:00">2022-04-11</time>
+                <time title="修改时间：2022-04-21 09:39:26" itemprop="dateModified" datetime="2022-04-21T09:39:26+08:00">2022-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -245,6 +245,19 @@
 <p>所谓分区裁剪指的是：对分区表进行查询时，会检查<code>WHERE</code>子句或<code>JOIN</code>中的<code>ON</code>子句中是否存在对分区字段的过滤，如果存在，则仅访问查询符合条件的分区，即裁剪掉没必要访问的分区。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--创建分区表</span></span><br><span class="line">creat <span class="keyword">table</span> t_1(</span><br><span class="line">    id <span class="type">int</span>,</span><br><span class="line">    name string,</span><br><span class="line">    gender string,</span><br><span class="line">    addr string</span><br><span class="line">) partitioned <span class="keyword">by</span> (gender_p string)</span><br><span class="line"><span class="type">row</span> format delimited fields</span><br><span class="line">terminated <span class="keyword">by</span> <span class="string">&#x27;\001&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--动态加载分区表</span></span><br><span class="line"><span class="keyword">set</span> hive.exec.dynamic.partition.mode <span class="operator">=</span> nonstrict;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> t_1 <span class="keyword">partition</span> (gender_p)</span><br><span class="line"><span class="keyword">select</span> ori.<span class="operator">*</span>, gender <span class="keyword">from</span> t_ori <span class="keyword">as</span> ori;</span><br><span class="line"></span><br><span class="line"><span class="comment">--分区表查询，顺利执行</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_1 <span class="keyword">where</span> t_1.gender_p <span class="operator">=</span> <span class="string">&#x27;male&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--严格模式下不指定分区将报错，因为t_1是个分区表！</span></span><br><span class="line"><span class="keyword">set</span> hive.mapred.mode <span class="operator">=</span> strict</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_1</span><br></pre></td></tr></table></figure>
 
+<h2 id="分桶采样"><a href="#分桶采样" class="headerlink" title="分桶采样"></a>分桶采样</h2><p>对表进行分桶一般有两个目的，提高数据查询效率和抽样调查。在实际生产中，对于非常大的数据集，有时我们需要的是一个具有代表性的查询结果，而非全部结果。这时候就可以使用如下语句对分桶表进行数据采样。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t_data <span class="keyword">tablesample</span>(bucket x <span class="keyword">out</span> <span class="keyword">of</span> y <span class="keyword">on</span> [<span class="keyword">column</span>])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>x：表示从第几个桶开始抽，最小序号为0。</li>
+<li>y：表示抽取桶的比例（总桶数 &#x2F; y &#x3D; 抽多少个桶）。</li>
+<li>column：表示按照哪个字段抽样（一般为分桶字段）。</li>
+</ul>
+<blockquote>
+<p>y必须是t_data总桶数的倍数或因数，并且x必须小于等于y。</p>
+</blockquote>
+<p>hive根据y的大小，决定抽样比例。<br>例如，t_data一共分为了10个bucket（桶）。当y&#x3D;2，抽取5个桶的数据；当y&#x3D;10，抽取1个桶的数据。</p>
+<p>如果总桶数为6，<code>tablesample(bucket 1 out of 2)</code>则表示一共抽取3个桶的数据，从序号为1的桶开始，抽取第1（x）个桶，第3（x+y）个桶和第5（x+y+y）个桶的数据。</p>
 <h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><h3 id="order-by"><a href="#order-by" class="headerlink" title="order by"></a>order by</h3><p>Hive SQL中的<code>order by</code>语法类似于SQL语言中的<code>order by</code>语法。会对输出的结果进行全局排序，因此底层使用MapReduce引擎执行的时候，只会有一个reduce task执行。也因此，如果输出的行数太大，会导致需要很长的时间才能完成全局排序。</p>
 <p>默认排序顺序为<code>ASC</code>升序，也可以指定为<code>DESC</code>降序。</p>
 <p>在Hive 2.1.0和更高版本中，支持在<code>order by</code>子句中为每个列指定null类型结果排序顺序。ASC顺序的默认空排序顺序为NULLS FIRST，而DESC顺序的默认空排序顺序为NULLS LAST。</p>
@@ -420,7 +433,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E6%9F%A5%E8%AF%A2%EF%BC%88%E5%88%86%E5%8C%BA%E8%A3%81%E5%89%AA%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">分区查询（分区裁剪）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F"><span class="nav-number">2.</span> <span class="nav-text">排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#order-by"><span class="nav-number">2.1.</span> <span class="nav-text">order by</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cluster-by"><span class="nav-number">2.2.</span> <span class="nav-text">cluster by</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#distribute-by-sort-by"><span class="nav-number">2.3.</span> <span class="nav-text">distribute by + sort by</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#union-%E8%81%94%E5%90%88%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.</span> <span class="nav-text">union 联合查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Common-Table-Expressions-CTE"><span class="nav-number">4.</span> <span class="nav-text">Common Table Expressions (CTE)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#join-%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="nav-number">5.</span> <span class="nav-text">join 连接查询</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E6%9F%A5%E8%AF%A2%EF%BC%88%E5%88%86%E5%8C%BA%E8%A3%81%E5%89%AA%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">分区查询（分区裁剪）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%A1%B6%E9%87%87%E6%A0%B7"><span class="nav-number">2.</span> <span class="nav-text">分桶采样</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F"><span class="nav-number">3.</span> <span class="nav-text">排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#order-by"><span class="nav-number">3.1.</span> <span class="nav-text">order by</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cluster-by"><span class="nav-number">3.2.</span> <span class="nav-text">cluster by</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#distribute-by-sort-by"><span class="nav-number">3.3.</span> <span class="nav-text">distribute by + sort by</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#union-%E8%81%94%E5%90%88%E6%9F%A5%E8%AF%A2"><span class="nav-number">4.</span> <span class="nav-text">union 联合查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Common-Table-Expressions-CTE"><span class="nav-number">5.</span> <span class="nav-text">Common Table Expressions (CTE)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#join-%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="nav-number">6.</span> <span class="nav-text">join 连接查询</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
