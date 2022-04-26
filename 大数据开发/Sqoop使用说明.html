@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ovo.lol","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Sqoop使用说明概述Sqoop是Apache旗下一款ETL工具，用于Hadoop和RDBMS之间传送数据。 工作原理：将命令转换为MapReduce程序实现。 导入数据：MySQL、Oracle导入数据到Hadoop的HDFS、HIVE、HBASE等数据存储系统。 导出数据：从Hadoop的HDFS、HIVE中导出数据到关系数据库MySQL等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sqoop使用说明">
+<meta property="og:url" content="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Sqoop%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.html">
+<meta property="og:site_name" content="黑洞">
+<meta property="og:description" content="Sqoop使用说明概述Sqoop是Apache旗下一款ETL工具，用于Hadoop和RDBMS之间传送数据。 工作原理：将命令转换为MapReduce程序实现。 导入数据：MySQL、Oracle导入数据到Hadoop的HDFS、HIVE、HBASE等数据存储系统。 导出数据：从Hadoop的HDFS、HIVE中导出数据到关系数据库MySQL等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-26T01:51:59.000Z">
+<meta property="article:modified_time" content="2022-04-26T01:52:58.450Z">
+<meta property="article:author" content="Mr Fu">
+<meta property="article:tag" content="Hive">
+<meta property="article:tag" content="Mysql">
+<meta property="article:tag" content="Sqoop">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Sqoop%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Sqoop使用说明 | 黑洞</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">黑洞</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">这里藏着一些独特的想法</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Sqoop%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mr Fu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黑洞">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Sqoop使用说明
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-04-26 09:51:59 / 修改时间：09:52:58" itemprop="dateCreated datePublished" datetime="2022-04-26T09:51:59+08:00">2022-04-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">大数据开发</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Sqoop%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.html#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="大数据开发/Sqoop使用说明.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Sqoop使用说明"><a href="#Sqoop使用说明" class="headerlink" title="Sqoop使用说明"></a>Sqoop使用说明</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Sqoop是Apache旗下一款ETL工具，用于Hadoop和RDBMS之间传送数据。</p>
+<p>工作原理：将命令转换为MapReduce程序实现。</p>
+<p>导入数据：MySQL、Oracle导入数据到Hadoop的HDFS、HIVE、HBASE等数据存储系统。</p>
+<p>导出数据：从Hadoop的HDFS、HIVE中导出数据到关系数据库MySQL等。</p>
+<span id="more"></span>
+
+<h2 id="抽取方式"><a href="#抽取方式" class="headerlink" title="抽取方式"></a>抽取方式</h2><p>通过Sqoop将RDMBS中的数据导入到Hive有两种方式。一种是原生Sqoop API，另一种是HCatalog API，两种方式略有不同。</p>
+<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><h4 id="数据格式支持"><a href="#数据格式支持" class="headerlink" title="数据格式支持"></a>数据格式支持</h4><p>Sqoop方式支持的数据格式较少，HCatalog支持的数据格式多，包括RCFile、ORCFile、CSV、JSON和SequenceFile等格式。</p>
+<h4 id="数据覆盖"><a href="#数据覆盖" class="headerlink" title="数据覆盖"></a>数据覆盖</h4><p>Sqoop方式允许数据覆盖，HCatalog不允许数据覆盖，每次都只是追加。</p>
+<h4 id="字段名"><a href="#字段名" class="headerlink" title="字段名"></a>字段名</h4><p>Sqoop方式比较随意，不要求源表和目标表字段相同（字段名称和个数都可以不相同），它抽取的方式是将字段按顺序插入，比如目标表有3个字段，源表有一个字段，它会将数据插入到Hive表的第一个字段，其余字段为<code>NULL</code>。但是HCatalog不同，源表和目标表字段名需要相同，字段个数可以不相等，如果字段名不同，抽取数据的时候会报<code>NullPointerException</code>错误。HCatalog抽取数据时，会将字段对应到相同字段名的字段上，哪怕字段个数不相等。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>不论是从格式兼容性还是数据的完整性、安全性考虑，都建议使用HCatalog方式抽取，并且字段不管是顺序还是名字都保持一致。</p>
+<h2 id="基操命令"><a href="#基操命令" class="headerlink" title="基操命令"></a>基操命令</h2><blockquote>
+<p>Sqoop1以Client客户端的形式存在和运行。没有任务时是没有进程存在的。<br>Sqoop2则是B&#x2F;S的架构，始终有Server进程运行着。<br>官方文档：<a target="_blank" rel="noopener" href="https://sqoop.apache.org/">https://sqoop.apache.org/</a></p>
+</blockquote>
+<p>以下是Sqoop1的一些使用方法。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看版本</span></span><br><span class="line">sqoop-version</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看帮助文档</span></span><br><span class="line">sqoop help</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看所有数据库</span></span><br><span class="line">sqoop list-databases \</span><br><span class="line">--connect jdbc:mysql://192.168.52.150:3306 \</span><br><span class="line">--username root \</span><br><span class="line">--password 123456</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看数据库下的所有表</span></span><br><span class="line">sqoop list-tables \</span><br><span class="line">--connect jdbc:mysql://192.168.52.150:3306/tmall \</span><br><span class="line">--username root \</span><br><span class="line">--password 123456</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">全量导入至HDFS</span></span><br><span class="line">sqoop import \</span><br><span class="line">--connect jdbc:mysql://192.168.52.150:3306/test \</span><br><span class="line">--username root \</span><br><span class="line">--password 123456 \</span><br><span class="line">--table emp</span><br></pre></td></tr></table></figure>
+
+<p>不指定其他参数的情况下，每条数据（记录）会运行一个mapTask, 数据的默认分隔符号为逗号。</p>
+<p>如果是root（Linux用户）运行了Sqoop，则数据在HDFS中的存放路径为<code>/user/root/</code>。</p>
+<p>因此，我们还可以指定其他参数。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--connect</code></td>
+<td>连接数据库</td>
+<td><code>--connect jdbc:mysql://192.168.52.150:3306/test</code></td>
+</tr>
+<tr>
+<td><code>--username</code></td>
+<td>数据库用户</td>
+<td><code>--username root</code></td>
+</tr>
+<tr>
+<td><code>--password</code></td>
+<td>用户的密码</td>
+<td><code>--password 123456</code></td>
+</tr>
+<tr>
+<td><code>--table</code></td>
+<td>源表名（RDBMS）</td>
+<td><code>--table emp</code></td>
+</tr>
+<tr>
+<td><code>--m</code></td>
+<td>map任务数（数量不为1时必须指定划分字段）</td>
+<td><code>--m 2</code></td>
+</tr>
+<tr>
+<td><code>--split-by</code></td>
+<td>根据字段划分</td>
+<td><code>--split-by id</code></td>
+</tr>
+<tr>
+<td><code>--target-dir</code></td>
+<td>目标路径</td>
+<td><code>--target-dir &#39;/sqoop_works/t_emp&#39;</code></td>
+</tr>
+<tr>
+<td><code>--delete-target-dir</code></td>
+<td>如果目标路径存在则删除</td>
+<td><code>--delete-target-dir</code></td>
+</tr>
+<tr>
+<td><code>--fields-terminated-by</code></td>
+<td>指定字段分隔符（导入时）</td>
+<td><code>--fields-terminated-by &#39;\001&#39;</code></td>
+</tr>
+<tr>
+<td><code>--input-fields-terminated-by</code></td>
+<td>指定字段分隔符（导出时）</td>
+<td><code>--input-fields-terminated-by &#39;\001&#39;</code></td>
+</tr>
+<tr>
+<td><code>--hcatalog-database</code></td>
+<td>指定Hive数据库</td>
+<td><code>--hcatalog-database testdb</code></td>
+</tr>
+<tr>
+<td><code>--hcatalog-table</code></td>
+<td>指定Hive表</td>
+<td><code>--hcatalog-table t_emp</code></td>
+</tr>
+<tr>
+<td><code>--where</code></td>
+<td>条件过滤</td>
+<td><code>--where &#39;id&gt;=100&#39;</code></td>
+</tr>
+<tr>
+<td><code>--query</code>或<code> --e</code></td>
+<td>SQL查询（使用时必须指定目标路径和划分字段）</td>
+<td>单引号 <code>--query &#39;select id, name, age from t_emp where age &gt; 30 and $CONDITIONS&#39;</code> <br>双引号 <code>--query &quot;select id, name, age from t_emp where age &gt; 30 and \$CONDITIONS&quot;</code></td>
+</tr>
+<tr>
+<td><code>--null-string</code></td>
+<td>导入时处理string类型的NULL值</td>
+<td><code>--null-string &#39;\N&#39;</code></td>
+</tr>
+<tr>
+<td><code>--null-non-string</code></td>
+<td>导入时处理非string类型的NULL值</td>
+<td><code>--null-non-string &#39;\N&#39;</code></td>
+</tr>
+<tr>
+<td><code>--create-hcatalog-table</code></td>
+<td>自动创建Hive表（一般不用，手动建表更灵活）</td>
+<td><code>--create-hcatalog-table</code></td>
+</tr>
+</tbody></table>
+<h3 id="栗子"><a href="#栗子" class="headerlink" title="栗子"></a>栗子</h3><p>需求：从户籍维度分析每个地方学生的男女比例。</p>
+<h4 id="导入"><a href="#导入" class="headerlink" title="导入"></a>导入</h4><ol>
+<li><p>参考源表建立Hive中的表，同时指定文件格式、分隔符、压缩方式。</p>
+</li>
+<li><p>MySQL中的<code>university</code>数据库下有一张名为<code>stu</code>的学生表。导入所有2022届的学生信息至Hive中的<code>edu_ods</code>数据库，分隔符为<code>\001</code>，存放路径为<code>/edu/stu_ods</code>。</p>
+</li>
+</ol>
+<blockquote>
+<p>无需在sqoop设置分隔符、压缩方式以及文件格式。因为手动建表时已经设置了。</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">sqoop import \</span><br><span class="line">--connect jdbc:mysql://192.168.52.150:3306/university \</span><br><span class="line">--username root \</span><br><span class="line">--password 123 \</span><br><span class="line">--table stu \</span><br><span class="line">--hcatalog-database edu_ods \</span><br><span class="line">--hcatalog-table stu_ods \</span><br><span class="line">--query &#x27;select * from stu where enroll_year = 2022 and $CONDITIONS&#x27; \</span><br><span class="line">--delete-target-dir \</span><br><span class="line">--taget-dir &#x27;/edu/stu_ods&#x27; \</span><br><span class="line">--split-by sid \</span><br><span class="line">--m 1</span><br></pre></td></tr></table></figure>
+
+<h4 id="导出"><a href="#导出" class="headerlink" title="导出"></a>导出</h4><ol>
+<li>参考结果表建立MySQL中的表。</li>
+<li>将分析结果导出至MySQL中的<code>BI</code>数据库。</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sqoop export \</span><br><span class="line">--connect jdbc:mysql://192.168.52.150:3306/bi \</span><br><span class="line">--username root \</span><br><span class="line">--password 123 \</span><br><span class="line">--table stu_household_gender_ratio \</span><br><span class="line">--hcatalog-database edu_da \</span><br><span class="line">--hcatalog-table stu_household_gender_ratio_da \</span><br><span class="line">--m 1</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>如果觉得文章写得不错或对您有帮助，请我喝杯柠檬茶吧！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Mr Fu 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Mr Fu
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Sqoop%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.html" title="Sqoop使用说明">https://ovo.lol/大数据开发/Sqoop使用说明.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hive/" rel="tag"># Hive</a>
+              <a href="/tags/Mysql/" rel="tag"># Mysql</a>
+              <a href="/tags/Sqoop/" rel="tag"># Sqoop</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E6%97%A5%E8%AE%B0/%E5%91%A8%E8%AE%B03.html" rel="prev" title="周记3">
+      <i class="fa fa-chevron-left"></i> 周记3
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Sqoop%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">Sqoop使用说明</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%BD%E5%8F%96%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">抽取方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8C%BA%E5%88%AB"><span class="nav-number">1.2.1.</span> <span class="nav-text">区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F%E6%94%AF%E6%8C%81"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">数据格式支持</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%A6%86%E7%9B%96"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">数据覆盖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E5%90%8D"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">字段名</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.2.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%93%8D%E5%91%BD%E4%BB%A4"><span class="nav-number">1.3.</span> <span class="nav-text">基操命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%97%E5%AD%90"><span class="nav-number">1.3.1.</span> <span class="nav-text">栗子</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">导入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%BC%E5%87%BA"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">导出</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Mr Fu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.papwin.com/" title="https:&#x2F;&#x2F;blog.papwin.com&#x2F;" rel="noopener" target="_blank">潘岸平的獨立博客</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr Fu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://ovolol.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Sqoop%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.html";
+    this.page.identifier = "大数据开发/Sqoop使用说明.html";
+    this.page.title = "Sqoop使用说明";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://ovolol.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>
