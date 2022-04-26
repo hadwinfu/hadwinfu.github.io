@@ -22,10 +22,10 @@ https://ovo.lol/
 https://ovo.lol/tags/Hadoop/
 https://ovo.lol/tags/Hive/
 https://ovo.lol/tags/SQL/
-https://ovo.lol/tags/Mysql/
 https://ovo.lol/tags/Sqoop/
 https://ovo.lol/tags/Zookeeper/
 https://ovo.lol/tags/Linux/
 https://ovo.lol/tags/Java/
+https://ovo.lol/tags/Mysql/
 https://ovo.lol/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/
 https://ovo.lol/categories/%E6%97%A5%E8%AE%B0/
