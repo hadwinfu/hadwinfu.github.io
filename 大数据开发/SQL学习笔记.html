@@ -28,7 +28,7 @@
 <meta property="og:description" content="空值(NULL)不能用 &#x3D;应该用 is null 或 is not null 使用 ifnull(col, default) 来处理空值  col : 列名 default : 默认值">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-04-06T04:56:18.000Z">
-<meta property="article:modified_time" content="2022-04-06T04:57:33.662Z">
+<meta property="article:modified_time" content="2022-04-29T01:19:29.254Z">
 <meta property="article:author" content="Mr Fu">
 <meta property="article:tag" content="SQL">
 <meta name="twitter:card" content="summary">
@@ -189,10 +189,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2022-04-06 12:56:18 / 修改时间：12:57:33" itemprop="dateCreated datePublished" datetime="2022-04-06T12:56:18+08:00">2022-04-06</time>
+              <time title="创建时间：2022-04-06 12:56:18" itemprop="dateCreated datePublished" datetime="2022-04-06T12:56:18+08:00">2022-04-06</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-04-29 09:19:29" itemprop="dateModified" datetime="2022-04-29T09:19:29+08:00">2022-04-29</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -277,7 +283,7 @@
 <li><code>rank()</code> 允许排名并列 存在序号不连续的情况</li>
 <li><code>dense_rank()</code> 允许排名并列 序号一定连续</li>
 <li><code>row_number()</code> 不允许排名并列，按查询到的顺序排序（索引）</li>
-<li><code>ntile(x)</code> 将数据分为x组，并给每组分配一个数子<br>例如：ntile(3) 按照排序分为3组，1代表上等，2代表中等，3代表下等</li>
+<li><code>ntile(x)</code> 将数据分为x组，并给每组分配一个数字<br>例如：ntile(3) 按照排序分为3组，1代表上等，2代表中等，3代表下等</li>
 </ul>
 <h3 id="多重排序"><a href="#多重排序" class="headerlink" title="多重排序"></a>多重排序</h3><p>字段1相等时 按字段2排序<br><code>rank() over(order by col1, col2)</code></p>
 <h2 id="with-子查询"><a href="#with-子查询" class="headerlink" title="with 子查询"></a>with 子查询</h2><p>作用：创建临时表（不写入数据库）<br>由于不能直接获取窗口函数的结果，因此需要创建临时表来进行子查询</p>
@@ -306,8 +312,7 @@
 <li><code>_</code> 一个任意字符</li>
 </ul>
 <h2 id="分析函数"><a href="#分析函数" class="headerlink" title="分析函数"></a>分析函数</h2><p>作用：计算增量或转化率</p>
-<p>向下面行取</p>
-<ul>
+<h4 id="向下面行取"><a href="#向下面行取" class="headerlink" title="向下面行取"></a>向下面行取</h4><ul>
 <li><code>lead(x, y, z)</code><ul>
 <li>x 要获取的字段</li>
 <li>y 偏移（省略则默认为1）</li>
@@ -317,9 +322,7 @@
 </ul>
 <p><code>lead(x, 2) over()</code></p>
 <p><code>当前行</code> 为第一行时，获取第3行的x字段值，若没有则返回z</p>
-<p>同理</p>
-<p>向上面行取</p>
-<ul>
+<h4 id="向上面行取"><a href="#向上面行取" class="headerlink" title="向上面行取"></a>向上面行取</h4><ul>
 <li><code>lag(x, y, z)</code></li>
 </ul>
 <p><code>lag(x, 2) over()</code></p>
@@ -327,19 +330,16 @@
 <p><code>lead(...) over(order by ...)</code></p>
 <p>等价于</p>
 <p><code>lag(...) over(order by ... desc)</code></p>
-<p>返回指定列的第一个值</p>
-<ul>
+<h4 id="返回指定列的第一个值"><a href="#返回指定列的第一个值" class="headerlink" title="返回指定列的第一个值"></a>返回指定列的第一个值</h4><ul>
 <li><code>first_value(x)</code></li>
 </ul>
-<p>返回指定列的最后一个值</p>
-<ul>
+<h4 id="返回指定列的最后一个值"><a href="#返回指定列的最后一个值" class="headerlink" title="返回指定列的最后一个值"></a>返回指定列的最后一个值</h4><ul>
 <li><code>last_value(x)</code></li>
 </ul>
 <p>当 <code>over</code> 子句中包含 <code>order by</code> 时， 如果不显式定义窗口大小，SQL会带上默认的语句 <code>range unbounded preceding</code>，意味着查询范围被限定在第一行至当前行！</p>
 <p>想要通过 <code>last_value</code> 与 <code>over()</code> 取所有数据排序后的最后一个值，则需要定义窗口大小为如下。</p>
 <p><code>last_value(col1) over(order by col2 [rows|range] between unbounded preceding and unbounded following)</code></p>
-<p>返回指定列的第几行的值</p>
-<ul>
+<h4 id="返回指定列的第几行的值"><a href="#返回指定列的第几行的值" class="headerlink" title="返回指定列的第几行的值"></a>返回指定列的第几行的值</h4><ul>
 <li><code>nth_value(x, n)</code><ul>
 <li>x 列名</li>
 <li>n 第几行</li>
@@ -468,7 +468,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A9%BA%E5%80%BC-NULL"><span class="nav-number">1.</span> <span class="nav-text">空值(NULL)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#order-by-%E6%8E%92%E5%BA%8F"><span class="nav-number">2.</span> <span class="nav-text">order by 排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#limit"><span class="nav-number">3.</span> <span class="nav-text">limit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">聚合函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#group-by-%E5%88%86%E7%BB%84%E6%9F%A5%E8%AF%A2"><span class="nav-number">5.</span> <span class="nav-text">group by 分组查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#having-%E8%BF%87%E6%BB%A4"><span class="nav-number">6.</span> <span class="nav-text">having 过滤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0"><span class="nav-number">7.</span> <span class="nav-text">窗口函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E5%87%BD%E6%95%B0"><span class="nav-number">8.</span> <span class="nav-text">排序函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E9%87%8D%E6%8E%92%E5%BA%8F"><span class="nav-number">8.1.</span> <span class="nav-text">多重排序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#with-%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-number">9.</span> <span class="nav-text">with 子查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AA%97%E5%8F%A3"><span class="nav-number">10.</span> <span class="nav-text">自定义窗口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#like-%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2"><span class="nav-number">11.</span> <span class="nav-text">like 模糊查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E5%87%BD%E6%95%B0"><span class="nav-number">12.</span> <span class="nav-text">分析函数</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A9%BA%E5%80%BC-NULL"><span class="nav-number">1.</span> <span class="nav-text">空值(NULL)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#order-by-%E6%8E%92%E5%BA%8F"><span class="nav-number">2.</span> <span class="nav-text">order by 排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#limit"><span class="nav-number">3.</span> <span class="nav-text">limit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">聚合函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#group-by-%E5%88%86%E7%BB%84%E6%9F%A5%E8%AF%A2"><span class="nav-number">5.</span> <span class="nav-text">group by 分组查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#having-%E8%BF%87%E6%BB%A4"><span class="nav-number">6.</span> <span class="nav-text">having 过滤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0"><span class="nav-number">7.</span> <span class="nav-text">窗口函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E5%87%BD%E6%95%B0"><span class="nav-number">8.</span> <span class="nav-text">排序函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E9%87%8D%E6%8E%92%E5%BA%8F"><span class="nav-number">8.1.</span> <span class="nav-text">多重排序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#with-%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-number">9.</span> <span class="nav-text">with 子查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AA%97%E5%8F%A3"><span class="nav-number">10.</span> <span class="nav-text">自定义窗口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#like-%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2"><span class="nav-number">11.</span> <span class="nav-text">like 模糊查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E5%87%BD%E6%95%B0"><span class="nav-number">12.</span> <span class="nav-text">分析函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%91%E4%B8%8B%E9%9D%A2%E8%A1%8C%E5%8F%96"><span class="nav-number">12.0.1.</span> <span class="nav-text">向下面行取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%91%E4%B8%8A%E9%9D%A2%E8%A1%8C%E5%8F%96"><span class="nav-number">12.0.2.</span> <span class="nav-text">向上面行取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E6%8C%87%E5%AE%9A%E5%88%97%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%80%BC"><span class="nav-number">12.0.3.</span> <span class="nav-text">返回指定列的第一个值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E6%8C%87%E5%AE%9A%E5%88%97%E7%9A%84%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E5%80%BC"><span class="nav-number">12.0.4.</span> <span class="nav-text">返回指定列的最后一个值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E6%8C%87%E5%AE%9A%E5%88%97%E7%9A%84%E7%AC%AC%E5%87%A0%E8%A1%8C%E7%9A%84%E5%80%BC"><span class="nav-number">12.0.5.</span> <span class="nav-text">返回指定列的第几行的值</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -482,7 +482,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
