@@ -371,7 +371,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-05-02 13:45:47 / 修改时间：13:54:12" itemprop="dateCreated datePublished" datetime="2022-05-02T13:45:47+08:00">2022-05-02</time>
+              <time title="创建时间：2022-05-02 13:45:47 / 修改时间：13:58:40" itemprop="dateCreated datePublished" datetime="2022-05-02T13:45:47+08:00">2022-05-02</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -410,56 +410,14 @@
       
           <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>数据倾斜在MapReduce计算框架中经常发生。通俗理解，该现象指的是在整个计算过程中，大量相同的key被分配到了同一个任务上，造成“一个人累死、其他人闲死”的状况，这违背了分布式计算的初衷，使得整体的执行效率十分低下。</p>
 <p>日常工作中数据倾斜主要发生在Reduce阶段，而很少发生在Map阶段，其原因是Map端的数据倾斜一般是由于HDFS数据存储不均匀造成的（公司的日志存储几乎都是均匀分块存储，每个文件大小基本固定），而Reduce阶段的数据倾斜几乎都是因为分析师没有考虑到某种key值数据量偏多的情况而导致的。</p>
-<p>那么，数据倾斜会导致什么？</p>
-<ol>
-<li>执行效率下降（整个执行时间，就看最后一个reduce结束时间）。</li>
-<li>由于其中某几个reduce长时间运行，资源长期被占用。一旦超时，YARN强制回收资源，导致运行失败。</li>
-<li>导致节点出现宕机问题。</li>
-</ol>
-<p>什么时候会发生数据倾斜？</p>
-<ol>
-<li>执行多表<code>join</code>查询的时候。</li>
-<li>执行<code>group by</code>的时候。</li>
-</ol>
-<h2 id="group-by-数据倾斜"><a href="#group-by-数据倾斜" class="headerlink" title="group by 数据倾斜"></a>group by 数据倾斜</h2><h3 id="map阶段-提前聚合"><a href="#map阶段-提前聚合" class="headerlink" title="map阶段 提前聚合"></a>map阶段 提前聚合</h3><p>在每一个mapTask中进行提前聚合操作，将聚合之后结果发送给reduce，完成最终的聚合，从而减少从map到reduce的数据量，减轻数据倾斜压力。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 开启map端提前聚合操作(combiner)</span></span><br><span class="line"><span class="keyword">set</span> hive.map.aggr<span class="operator">=</span><span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><p>采用两个MR来解决，第一个MR负责将数据均匀落在不同reduce上，进行聚合统计操作，形成一个局部的结果。然后运行第二个MR读取第一个MR的局部结果，相同key发往同一个reduce，完成最终聚合统计操作。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 大combiner</span></span><br><span class="line"><span class="keyword">set</span> hive.groupby.skewindata<span class="operator">=</span><span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
-
-<p><strong>注意：一旦启用负载均衡，Hive将不支持一个查询中使用多次<code>distinct</code>。一旦使用，就会报错！</strong></p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 其中: 1,2,3 是可以正常执行的，4会报错。</span></span><br><span class="line">(<span class="number">1</span>) <span class="keyword">SELECT</span> <span class="built_in">count</span>(<span class="keyword">DISTINCT</span> uid) <span class="keyword">FROM</span> <span class="built_in">log</span></span><br><span class="line">(<span class="number">2</span>) <span class="keyword">SELECT</span> ip, <span class="built_in">count</span>(<span class="keyword">DISTINCT</span> uid) <span class="keyword">FROM</span> log <span class="keyword">GROUP</span> <span class="keyword">BY</span> ip</span><br><span class="line">(<span class="number">3</span>) <span class="keyword">SELECT</span> ip, <span class="built_in">count</span>(<span class="keyword">DISTINCT</span> uid, uname) <span class="keyword">FROM</span> log <span class="keyword">GROUP</span> <span class="keyword">BY</span> ip</span><br><span class="line">(<span class="number">4</span>) <span class="keyword">SELECT</span> ip, <span class="built_in">count</span>(<span class="keyword">DISTINCT</span> uid), <span class="built_in">count</span>(<span class="keyword">DISTINCT</span> uname) <span class="keyword">FROM</span> log <span class="keyword">GROUP</span> <span class="keyword">BY</span> ip</span><br></pre></td></tr></table></figure>
-
-<h2 id="join-数据倾斜"><a href="#join-数据倾斜" class="headerlink" title="join 数据倾斜"></a>join 数据倾斜</h2><h3 id="map-join"><a href="#map-join" class="headerlink" title="map join"></a>map join</h3><p>具体的实现方法和原理不重复说了，之前的<a href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%BC%98%E5%8C%96%E5%A4%A7%E6%9D%82%E7%83%A9.html#join-%E4%BC%98%E5%8C%96">优化大杂烩</a>中有讲到。</p>
-<h3 id="排除法"><a href="#排除法" class="headerlink" title="排除法"></a>排除法</h3><p>由于map join的使用条件非常严苛，有时并不能满足。这时候我们可以将容易倾斜的值排除掉，单独用另一个MR来处理它们，方法可分为两种。</p>
-<h4 id="编译期排除"><a href="#编译期排除" class="headerlink" title="编译期排除"></a>编译期排除</h4><p>当明确知道表中哪些key的值有倾斜问题，可以在编译期解决。在建表的时候，提前设置好即可。这样在执行的时候，Hive会直接将这些倾斜key的值从这个MR排除掉，单独找一个MR来处理。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> hive.optimize.skewjoin.compiletime<span class="operator">=</span><span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
-<p>建表：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> list_bucket_single (key STRING, <span class="keyword">value</span> STRING)</span><br><span class="line"><span class="comment">-- 倾斜的字段和需要拆分的key值</span></span><br><span class="line">SKEWED <span class="keyword">BY</span> (key) <span class="keyword">ON</span> (<span class="number">1</span>,<span class="number">5</span>,<span class="number">6</span>)</span><br><span class="line"><span class="comment">-- 为倾斜值创建子目录单独存放</span></span><br><span class="line">[STORED <span class="keyword">AS</span> DIRECTORIES];</span><br></pre></td></tr></table></figure>
-
-<h4 id="运行期排除"><a href="#运行期排除" class="headerlink" title="运行期排除"></a>运行期排除</h4><p>在执行的过程中，Hive会记录每一个key出现的次数。当出现次数达到设置的阈值后，认为这个key有倾斜的趋势，直接将这个key对应数据排除掉，单独找一个MR来处理。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> hive.optimize.skewjoin<span class="operator">=</span><span class="literal">true</span>; <span class="comment">-- 开启运行期倾斜解决join。</span></span><br><span class="line"><span class="keyword">set</span> hive.skewjoin.key<span class="operator">=</span><span class="number">100000</span>; <span class="comment">-- 当key出现多少个的时候，认为有倾斜。</span></span><br></pre></td></tr></table></figure>
-
-<p>建议：</p>
-<ul>
-<li>如果提前知道表中有那些key有倾斜，在编译期解决即可。</li>
-<li>如果仅知道一部分, 对于其他key无法保证，那么编译期和运行期同时开启。</li>
-</ul>
-<h2 id="union-all-优化"><a href="#union-all-优化" class="headerlink" title="union all 优化:"></a>union all 优化:</h2><p>应用了表连接倾斜优化以后，会在执行计划中插入一个新的<code>union</code>操作，此时建议开启对<code>union</code>的优化配置。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> hive.optimize.skewjoin<span class="operator">=</span><span class="literal">true</span>;</span><br><span class="line"><span class="keyword">set</span> hive.optimize.skewjoin.compiletime<span class="operator">=</span><span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 此项配置减少对Union all子查询中间结果的二次读写</span></span><br><span class="line"><span class="keyword">set</span> hive.optimize.union.remove<span class="operator">=</span><span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
-
-<h2 id="count-distinct-优化"><a href="#count-distinct-优化" class="headerlink" title="count distinct 优化"></a>count distinct 优化</h2><p>由于SQL中的<code>Distinct</code>操作本身会有一个全局排序的过程，一般情况下，不建议采用<code>Count Distinct</code>方式进行去重计数，除非表的数量比较小。</p>
-<p>当SQL中不存在分组字段时，<code>Count Distinct</code>操作仅生成一个Reduce任务，该任务会对全部数据进行去重统计；</p>
-<p>当SQL中存在分组字段时，可能某些Reduce任务需要去重统计的数量非常大。在这种情况下，我们可以通过以下方式替换。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">    <span class="keyword">day</span>,</span><br><span class="line">    <span class="built_in">count</span>(<span class="keyword">distinct</span> id) <span class="keyword">as</span> id_cnt</span><br><span class="line"><span class="keyword">from</span> table_1</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">day</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 改写为</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">day</span>, <span class="built_in">count</span>(<span class="number">1</span>) <span class="keyword">as</span> id_cnt</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">    (</span><br><span class="line">        <span class="keyword">select</span> <span class="keyword">day</span> , id</span><br><span class="line">        <span class="keyword">from</span> table_1</span><br><span class="line">        <span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">day</span>, id</span><br><span class="line">    ) tmp</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">day</span>;</span><br></pre></td></tr></table></figure>
-
-<p>如果语句中存在多个<code>Distinct</code>命令，开发者需要评估下用空间换时间的方法是否能够提升效率。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">    <span class="keyword">day</span>,</span><br><span class="line">    <span class="built_in">count</span>(<span class="keyword">distinct</span> id1) <span class="keyword">as</span> id1_cnt,</span><br><span class="line">    <span class="built_in">count</span>(<span class="keyword">distinct</span> id2) <span class="keyword">as</span> id2_cnt</span><br><span class="line"><span class="keyword">from</span> table_1</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">day</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 改写为</span></span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">    <span class="keyword">day</span>,</span><br><span class="line">    <span class="built_in">sum</span>(if(tag <span class="operator">=</span> <span class="string">&#x27;id1&#x27;</span>, <span class="number">1</span>, <span class="number">0</span>)) <span class="keyword">as</span> id1_cnt,</span><br><span class="line">    <span class="built_in">sum</span>(if(tag <span class="operator">=</span> <span class="string">&#x27;id2&#x27;</span>, <span class="number">1</span>, <span class="number">0</span>)) <span class="keyword">as</span> id2_cnt</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">    (</span><br><span class="line">        <span class="keyword">select</span> <span class="keyword">day</span>, id1 <span class="keyword">as</span> id, <span class="string">&#x27;id1&#x27;</span> <span class="keyword">as</span> tag <span class="keyword">from</span> table_1 <span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">day</span>, id1</span><br><span class="line">        <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">        <span class="keyword">select</span> <span class="keyword">day</span>, id2 <span class="keyword">as</span> id, <span class="string">&#x27;id2&#x27;</span> <span class="keyword">as</span> tag <span class="keyword">from</span> table_1 <span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">day</span>, id2</span><br><span class="line">    ) tmp</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">day</span>;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>Reference: <a target="_blank" rel="noopener" href="https://www.getui.com/college/2021010444">https://www.getui.com/college/2021010444</a></p>
-</blockquote>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B9%8B%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C%E4%BC%98%E5%8C%96.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
