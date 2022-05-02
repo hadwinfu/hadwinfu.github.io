@@ -20,19 +20,21 @@
     var CONFIG = {"hostname":"ovo.lol","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="关于生活上周的生活一如既往的普通，没有惊喜。只是我的生物钟一直倒不过来，昼伏夜出，上班迟到了好几次了。我也不想啊，老板在上班之前给我画饼，现在又让员工做非本职的工作，pua我们说不这样就是没吃过生活的苦。我吐了。 昨天在抖音上看到嘉兴一位女孩穿着漂亮的衣服坐在天台轻生被消防员救下。评论里多数都是赞美消防员的，这并没有什么错。在以前，这种视频大家的关注点都在轻生者上，现在反而都在救援者上。显然，人心">
+  <meta name="description" content="概述Hive支持索引，但是Hive的索引与关系型数据库中的索引并不相同，比如，Hive不支持主键或者外键。 Hive索引可以建立在表中的某些列上，以提升一些操作的效率，例如减少MapReduce任务中需要读取的数据块的数量。 在可以预见到分区数据非常庞大的情况下，分桶和索引常常是优于分区的。而分桶由于SMB Join对关联键要求严格，所以并不是总能生效。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="周记3">
-<meta property="og:url" content="https://ovo.lol/%E6%97%A5%E8%AE%B0/%E5%91%A8%E8%AE%B03.html">
+<meta property="og:title" content="Hive之索引优化">
+<meta property="og:url" content="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B9%8B%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96.html">
 <meta property="og:site_name" content="黑洞">
-<meta property="og:description" content="关于生活上周的生活一如既往的普通，没有惊喜。只是我的生物钟一直倒不过来，昼伏夜出，上班迟到了好几次了。我也不想啊，老板在上班之前给我画饼，现在又让员工做非本职的工作，pua我们说不这样就是没吃过生活的苦。我吐了。 昨天在抖音上看到嘉兴一位女孩穿着漂亮的衣服坐在天台轻生被消防员救下。评论里多数都是赞美消防员的，这并没有什么错。在以前，这种视频大家的关注点都在轻生者上，现在反而都在救援者上。显然，人心">
+<meta property="og:description" content="概述Hive支持索引，但是Hive的索引与关系型数据库中的索引并不相同，比如，Hive不支持主键或者外键。 Hive索引可以建立在表中的某些列上，以提升一些操作的效率，例如减少MapReduce任务中需要读取的数据块的数量。 在可以预见到分区数据非常庞大的情况下，分桶和索引常常是优于分区的。而分桶由于SMB Join对关联键要求严格，所以并不是总能生效。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-04-17T22:46:31.000Z">
-<meta property="article:modified_time" content="2022-04-21T00:51:24.463Z">
+<meta property="article:published_time" content="2022-05-02T05:50:00.000Z">
+<meta property="article:modified_time" content="2022-05-02T05:50:48.036Z">
 <meta property="article:author" content="Mr Fu">
+<meta property="article:tag" content="Hive">
+<meta property="article:tag" content="SQL">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://ovo.lol/%E6%97%A5%E8%AE%B0/%E5%91%A8%E8%AE%B03.html">
+<link rel="canonical" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B9%8B%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96.html">
 
 
 <script id="page-configurations">
@@ -45,7 +47,7 @@
   };
 </script>
 
-  <title>周记3 | 黑洞</title>
+  <title>Hive之索引优化 | 黑洞</title>
   
 
 
@@ -166,7 +168,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E6%97%A5%E8%AE%B0/%E5%91%A8%E8%AE%B03.html">
+    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B9%8B%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -179,7 +181,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          周记3
+          Hive之索引优化
         </h1>
 
         <div class="post-meta">
@@ -188,23 +190,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-04-18 06:46:31" itemprop="dateCreated datePublished" datetime="2022-04-18T06:46:31+08:00">2022-04-18</time>
+              <time title="创建时间：2022-05-02 13:50:00 / 修改时间：13:50:48" itemprop="dateCreated datePublished" datetime="2022-05-02T13:50:00+08:00">2022-05-02</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-04-21 08:51:24" itemprop="dateModified" datetime="2022-04-21T08:51:24+08:00">2022-04-21</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%97%A5%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">日记</span></a>
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">大数据开发</span></a>
                 </span>
             </span>
 
@@ -217,8 +213,8 @@
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/%E6%97%A5%E8%AE%B0/%E5%91%A8%E8%AE%B03.html#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="日记/周记3.html" itemprop="commentCount"></span>
+    <a title="disqus" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B9%8B%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96.html#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="大数据开发/Hive之索引优化.html" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -233,12 +229,52 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="关于生活"><a href="#关于生活" class="headerlink" title="关于生活"></a>关于生活</h2><p>上周的生活一如既往的普通，没有惊喜。只是我的生物钟一直倒不过来，昼伏夜出，上班迟到了好几次了。我也不想啊，老板在上班之前给我画饼，现在又让员工做非本职的工作，pua我们说不这样就是没吃过生活的苦。我吐了。</p>
-<p>昨天在抖音上看到嘉兴一位女孩穿着漂亮的衣服坐在天台轻生被消防员救下。评论里多数都是赞美消防员的，这并没有什么错。在以前，这种视频大家的关注点都在轻生者上，现在反而都在救援者上。显然，人心渐渐变得冷漠，大家现在并不在意与自身毫无相干因生活绝望的轻生者，认为他们愚蠢，幼稚，活该。毕竟事情没有发生在他们身上，共情个屁。只能说，生活的压力下，人们都变的更加现实。</p>
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Hive支持索引，但是Hive的索引与关系型数据库中的索引并不相同，比如，Hive不支持主键或者外键。</p>
+<p>Hive索引可以建立在表中的某些列上，以提升一些操作的效率，例如减少MapReduce任务中需要读取的数据块的数量。</p>
+<p>在可以预见到分区数据非常庞大的情况下，分桶和索引常常是优于分区的。而分桶由于SMB Join对关联键要求严格，所以并不是总能生效。</p>
 <span id="more"></span>
 
-<h2 id="关于学习"><a href="#关于学习" class="headerlink" title="关于学习"></a>关于学习</h2><p>上上周说的小目标，我做到了。之前的确学的太拼了，每天学到天亮身体真的吃不消。与其每天学那么多囫囵吞枣，不如熟记两三节的知识。因此，我也在备忘录里留了很多坑，例如：完成xxx的笔记。</p>
-<p>上周做项目的时候真正让我体验到了MapReduce的恶心，明明可以智能优化的事非要手动开一大堆参数，有时候开启优化还是负优化，怪不得人家都用Spark。距离我学完项目实战这章节还剩十几个小节没有看完，这周的小目标就是把本章节学完，同时完成相应的笔记！</p>
+<h2 id="三种索引"><a href="#三种索引" class="headerlink" title="三种索引"></a>三种索引</h2><h3 id="Hive原始索引（弃用）"><a href="#Hive原始索引（弃用）" class="headerlink" title="Hive原始索引（弃用）"></a>Hive原始索引（弃用）</h3><p>Hive索引使用过程繁杂，而且性能一般，在<strong>Hive3.0中已被删除</strong>，在工作环境中不推荐优先使用，在分区数量过多或查询字段不是分区字段时，索引可以作为补充方案同时使用。推荐使用ORC文件格式的索引类型进行查询。</p>
+<h3 id="行组索引（Row-Group-Index）"><a href="#行组索引（Row-Group-Index）" class="headerlink" title="行组索引（Row Group Index）"></a>行组索引（Row Group Index）</h3><p>一个ORC文件包含一个或多个stripes(groups of row data)，每个stripe中包含了每个column的min&#x2F;max值的索引数据，当查询中有<code>&lt;,&gt;,=</code>的操作时，会根据min&#x2F;max值，跳过扫描不包含的stripes。</p>
+<p>而其中为每个stripe建立的包含min&#x2F;max值的索引，就称为行组索引，也叫大小对比索引（min-max Index）。这种索引主要用于数值型字段的查询过滤优化上。</p>
+<p>在建立ORC格式表时，指定表参数<code>&#39;orc.create.index&#39;=&#39;true&#39;</code>之后，便会建立行组索引。</p>
+<blockquote>
+<p>为了使Row Group Index有效利用，向表中加载数据时，必须对需要使用索引的字段进行排序，否则，min&#x2F;max会失去意义。</p>
+</blockquote>
+<p>条件:</p>
+<ol>
+<li>要求表必须是ORC存储格式。</li>
+<li>需要对那个字段进行索引，必须对这个字段进行排序，否则索引意义不大。</li>
+<li>在创建表的时候，必须开启行组索引：<code>&#39;orc.create.index&#39;=&#39;true&#39;</code>。</li>
+<li>主要应用在<code>&lt; &gt; =</code>场景中，针对数值类型数据。</li>
+</ol>
+<p>创建表&#x2F;插入数据：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> lxw1234_orc2 stored <span class="keyword">AS</span> ORC</span><br><span class="line">TBLPROPERTIES</span><br><span class="line">(</span><br><span class="line">    <span class="string">&#x27;orc.compress&#x27;</span><span class="operator">=</span><span class="string">&#x27;SNAPPY&#x27;</span>,</span><br><span class="line">    <span class="comment">-- 开启行组索引</span></span><br><span class="line">    <span class="string">&#x27;orc.create.index&#x27;</span><span class="operator">=</span><span class="string">&#x27;true&#x27;</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">AS</span></span><br><span class="line">    <span class="keyword">SELECT</span> <span class="built_in">CAST</span>(siteid <span class="keyword">AS</span> <span class="type">INT</span>) <span class="keyword">AS</span> id,</span><br><span class="line">    pcid</span><br><span class="line">    <span class="keyword">FROM</span> lxw1234_text</span><br><span class="line">    <span class="comment">-- 插入的数据保持排序</span></span><br><span class="line">    DISTRIBUTE <span class="keyword">BY</span> id sort <span class="keyword">BY</span> id;</span><br></pre></td></tr></table></figure>
+
+<p>查询：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> hive.optimize.index.filter<span class="operator">=</span><span class="literal">true</span>;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="number">1</span>) <span class="keyword">FROM</span> lxw1234_orc1 <span class="keyword">WHERE</span> id <span class="operator">&gt;=</span> <span class="number">1382</span> <span class="keyword">AND</span> id <span class="operator">&lt;=</span> <span class="number">1399</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="布隆过滤索引（Bloom-Fillter-Index）"><a href="#布隆过滤索引（Bloom-Fillter-Index）" class="headerlink" title="布隆过滤索引（Bloom Fillter Index）"></a>布隆过滤索引（Bloom Fillter Index）</h2><p>在建表时候，通过表参数<code>&#39;orc.bloom.filter.columns&#39;=&#39;pcid&#39;</code>来指定为那些字段建立BloomFilter索引，这样，在生成数据的时候，会在每个stripe中，为该字段建立BloomFilter的数据结构，当查询条件中包含对该字段进行等值过滤的时候，先从BloomFilter中获取以下是否包含该值，如果不包含，则跳过该stripe。</p>
+<p>条件:</p>
+<ol>
+<li>必须是ORC类型的表。</li>
+<li>需要按照哪一个字段进行等值连接，需要对这个字段构建布隆索引。</li>
+<li>仅适合做等值连接，不局限于数据类型</li>
+<li>在建表的时候，必须指定为那些字段开启：<code>&#39;orc.bloom.filter.columns&#39;=&#39;字段1,字段2...&#39;</code></li>
+</ol>
+<p>建表：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> lxw1234_orc2 stored <span class="keyword">AS</span> ORC</span><br><span class="line">TBLPROPERTIES</span><br><span class="line">(</span><br><span class="line">    <span class="string">&#x27;orc.compress&#x27;</span><span class="operator">=</span><span class="string">&#x27;SNAPPY&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;orc.create.index&#x27;</span><span class="operator">=</span><span class="string">&#x27;true&#x27;</span>,</span><br><span class="line">    <span class="comment">-- pcid字段开启BloomFilter索引</span></span><br><span class="line">    <span class="string">&#x27;orc.bloom.filter.columns&#x27;</span><span class="operator">=</span><span class="string">&#x27;pcid&#x27;</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">AS</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">CAST</span>(siteid <span class="keyword">AS</span> <span class="type">INT</span>) <span class="keyword">AS</span> id,</span><br><span class="line">pcid</span><br><span class="line"><span class="keyword">FROM</span> lxw1234_text</span><br><span class="line">DISTRIBUTE <span class="keyword">BY</span> id sort <span class="keyword">BY</span> id;</span><br></pre></td></tr></table></figure>
+
+<p>查询：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> hive.optimize.index.filter<span class="operator">=</span><span class="literal">true</span>;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(<span class="number">1</span>) <span class="keyword">FROM</span> lxw1234_orc1 <span class="keyword">WHERE</span> id <span class="operator">&gt;=</span> <span class="number">0</span> <span class="keyword">AND</span> id <span class="operator">&lt;=</span> <span class="number">1000</span>  </span><br><span class="line"><span class="keyword">AND</span> pcid <span class="keyword">IN</span> (<span class="string">&#x27;0005E26F0DCCDB56F9041C&#x27;</span>,<span class="string">&#x27;A&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>Tips:</strong></p>
+<ul>
+<li><p>行组索引：建议常开。在插入数据时，如果不明确对哪个字段使用行组索引，可以任意的插入；在条件合适情况下，也在使用行组索引。</p>
+</li>
+<li><p>布隆过滤索引：主要用于等值连接的字段，一般是<code>join关联字段</code>以及<code>清洗字段</code>。</p>
+</li>
+</ul>
 
     </div>
 
@@ -269,7 +305,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://ovo.lol/%E6%97%A5%E8%AE%B0/%E5%91%A8%E8%AE%B03.html" title="周记3">https://ovo.lol/日记/周记3.html</a>
+    <a href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B9%8B%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96.html" title="Hive之索引优化">https://ovo.lol/大数据开发/Hive之索引优化.html</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -279,6 +315,10 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hive/" rel="tag"># Hive</a>
+              <a href="/tags/SQL/" rel="tag"># SQL</a>
+          </div>
 
         
 
@@ -286,13 +326,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%8B%89%E9%93%BE%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.html" rel="prev" title="拉链表的实现原理">
-      <i class="fa fa-chevron-left"></i> 拉链表的实现原理
+    <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E5%87%BD%E6%95%B0%E9%AB%98%E9%98%B6%E5%BA%94%E7%94%A8.html" rel="prev" title="Hive函数高阶应用">
+      <i class="fa fa-chevron-left"></i> Hive函数高阶应用
     </a></div>
-      <div class="post-nav-item">
-    <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%BC%98%E5%8C%96%E5%A4%A7%E6%9D%82%E7%83%A9.html" rel="next" title="Hive的优化大杂烩">
-      Hive的优化大杂烩 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -358,7 +395,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E7%94%9F%E6%B4%BB"><span class="nav-number">1.</span> <span class="nav-text">关于生活</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%AD%A6%E4%B9%A0"><span class="nav-number">2.</span> <span class="nav-text">关于学习</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E7%A7%8D%E7%B4%A2%E5%BC%95"><span class="nav-number">2.</span> <span class="nav-text">三种索引</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hive%E5%8E%9F%E5%A7%8B%E7%B4%A2%E5%BC%95%EF%BC%88%E5%BC%83%E7%94%A8%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">Hive原始索引（弃用）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%8C%E7%BB%84%E7%B4%A2%E5%BC%95%EF%BC%88Row-Group-Index%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">行组索引（Row Group Index）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E7%B4%A2%E5%BC%95%EF%BC%88Bloom-Fillter-Index%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">布隆过滤索引（Bloom Fillter Index）</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -557,9 +594,9 @@ window.addEventListener('pjax:success', () => {
 </script>
 <script>
   var disqus_config = function() {
-    this.page.url = "https://ovo.lol/%E6%97%A5%E8%AE%B0/%E5%91%A8%E8%AE%B03.html";
-    this.page.identifier = "日记/周记3.html";
-    this.page.title = "周记3";
+    this.page.url = "https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B9%8B%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96.html";
+    this.page.identifier = "大数据开发/Hive之索引优化.html";
+    this.page.title = "Hive之索引优化";
     };
   NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
     if (window.DISQUS) {
