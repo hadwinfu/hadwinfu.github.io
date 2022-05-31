@@ -161,6 +161,416 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E6%93%8D%E9%80%9F%E6%9F%A5.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mr Fu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黑洞">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E6%93%8D%E9%80%9F%E6%9F%A5.html" class="post-title-link" itemprop="url">Pyspark学习之基操速查</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-05-31 11:44:24 / 修改时间：11:45:25" itemprop="dateCreated datePublished" datetime="2022-05-31T11:44:24+08:00">2022-05-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">大数据开发</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E6%93%8D%E9%80%9F%E6%9F%A5.html#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="大数据开发/pyspark学习之基操速查.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<blockquote>
+<p>本文只是站长的学习记录，内容并不完善，有时间继续补充。</p>
+</blockquote>
+</blockquote>
+<h2 id="Driver初始化"><a href="#Driver初始化" class="headerlink" title="Driver初始化"></a>Driver初始化</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> SparkSession</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置环境变量</span></span><br><span class="line">os.environ[<span class="string">&#x27;SPARK_HOME&#x27;</span>] = <span class="string">&#x27;/export/server/spark&#x27;</span></span><br><span class="line">PYSPARK_PYTHON = <span class="string">&quot;/root/anaconda3/envs/pyspark_env/bin/python&quot;</span></span><br><span class="line"><span class="comment"># 当存在多个版本时，不指定很可能会导致出错</span></span><br><span class="line">os.environ[<span class="string">&quot;PYSPARK_PYTHON&quot;</span>] = PYSPARK_PYTHON</span><br><span class="line">os.environ[<span class="string">&quot;PYSPARK_DRIVER_PYTHON&quot;</span>] = PYSPARK_PYTHON</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="comment"># todo 创建spark会话</span></span><br><span class="line">    spark = SparkSession.builder \</span><br><span class="line">        .appName(<span class="string">&#x27;first app&#x27;</span>) \</span><br><span class="line">        .master(<span class="string">&#x27;local[*]&#x27;</span>) \</span><br><span class="line">        .getOrCreate()</span><br><span class="line"></span><br><span class="line">    sc = spark.sparkContext</span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    master（driver运行的地方）可指定为以下几种：</span></span><br><span class="line"><span class="string">    本地模式 &#x27;local[*]&#x27;</span></span><br><span class="line"><span class="string">    Standalone &#x27;spark://node1:7077&#x27;</span></span><br><span class="line"><span class="string">    Standalone高可用 &#x27;spark://node1:7077,node2:7077&#x27;</span></span><br><span class="line"><span class="string">    Yarn集群 &#x27;yarn-cluster&#x27;</span></span><br><span class="line"><span class="string">    Yarn客户端 &#x27;yarn-client&#x27;</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 结束运行</span></span><br><span class="line">    spark.stop()</span><br></pre></td></tr></table></figure>
+
+<h2 id="RDD"><a href="#RDD" class="headerlink" title="RDD"></a>RDD</h2><h3 id="并行化创建"><a href="#并行化创建" class="headerlink" title="并行化创建"></a>并行化创建</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rdd1 = sc.parallelize([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>])</span><br></pre></td></tr></table></figure>
+
+<h3 id="读写"><a href="#读写" class="headerlink" title="读写"></a>读写</h3><h4 id="读取为rdd"><a href="#读取为rdd" class="headerlink" title="读取为rdd"></a>读取为rdd</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rdd1 = sc.textFile(<span class="string">&#x27;/export/data/a.txt&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="写"><a href="#写" class="headerlink" title="写"></a>写</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rdd1 = sc.textFile(<span class="string">&#x27;/export/data/log.txt&#x27;</span>)</span><br><span class="line">rdd1.saveAsTextFile(<span class="string">&#x27;hdfs://uv/result&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="小文件读取"><a href="#小文件读取" class="headerlink" title="小文件读取"></a>小文件读取</h3><p>在实际项目中，有时往往处理的数据文件属于小文件（每个文件数据数据量很小，比如KB，几十MB等），文件数量又很大，如果一个个文件读取为RDD的一个个分区，计算数据时很耗时性能低下，使用SparkContext中提供：wholeTextFiles类，专门读取小文件数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo 读取小文件</span></span><br><span class="line">resultRDD = sc.wholeTextFiles(<span class="string">&quot;file:///export/data/ratings100/&quot;</span>)</span><br><span class="line"><span class="comment"># 取分区数</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;whole textFile numpartitions:&quot;</span>, resultRDD.getNumPartitions())</span><br></pre></td></tr></table></figure>
+
+<p>如果从HDFS读取海量数据，应用运行在YARN上，默认情况下，RDD分区数目等于HDFS上Block块数目。</p>
+<h2 id="Dataframe"><a href="#Dataframe" class="headerlink" title="Dataframe"></a>Dataframe</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><h4 id="反射推断创建"><a href="#反射推断创建" class="headerlink" title="反射推断创建"></a>反射推断创建</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo 反射推断创建</span></span><br><span class="line"><span class="keyword">from</span> pyspark <span class="keyword">import</span> Row</span><br><span class="line"></span><br><span class="line">rdd = sc.parallelize([(<span class="string">&#x27;jack&#x27;</span>, <span class="number">18</span>), (<span class="string">&#x27;rose&#x27;</span>, <span class="number">16</span>)])</span><br><span class="line">schema_rdd = rdd.<span class="built_in">map</span>(<span class="keyword">lambda</span> p: Row(name=p[<span class="number">0</span>], age=<span class="built_in">int</span>(p[<span class="number">1</span>])))</span><br><span class="line">df_person = spark.createDataFrame(schema_rdd)</span><br></pre></td></tr></table></figure>
+
+<h4 id="StructType创建"><a href="#StructType创建" class="headerlink" title="StructType创建"></a>StructType创建</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo StructType方式</span></span><br><span class="line"><span class="keyword">from</span> pyspark.sql.types <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">rdd = sc.parallelize([(<span class="string">&#x27;jack&#x27;</span>, <span class="number">18</span>), (<span class="string">&#x27;rose&#x27;</span>, <span class="number">16</span>)])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义schema 分别是 列名 类型 是否允许为空</span></span><br><span class="line">schema = StructType([</span><br><span class="line">    StructField(<span class="string">&#x27;name&#x27;</span>, StringType(), <span class="literal">True</span>),</span><br><span class="line">    StructField(<span class="string">&#x27;age&#x27;</span>, IntegerType(), <span class="literal">True</span>)</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">df_person = spark.createDataFrame(rdd, schema=schema)</span><br></pre></td></tr></table></figure>
+
+<h3 id="读写-1"><a href="#读写-1" class="headerlink" title="读写"></a>读写</h3><h4 id="读取为Dataframe"><a href="#读取为Dataframe" class="headerlink" title="读取为Dataframe"></a>读取为Dataframe</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo 读取csv</span></span><br><span class="line">spark.read.<span class="built_in">format</span>(<span class="string">&#x27;csv&#x27;</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;header&#x27;</span>, <span class="literal">True</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;sep&#x27;</span>, <span class="string">&#x27;,&#x27;</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;inferSchema&#x27;</span>, <span class="literal">True</span>) \</span><br><span class="line">    .load(<span class="string">&#x27;/export/data/abc.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># todo 读取json</span></span><br><span class="line">peopleDF = spark.read.<span class="built_in">format</span>(<span class="string">&quot;json&quot;</span>).load(<span class="string">&quot;/datas/resources/people.json&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="写-1"><a href="#写-1" class="headerlink" title="写"></a>写</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo 导出到数据库</span></span><br><span class="line">payType_percent_df \</span><br><span class="line">    .coalesce(<span class="number">1</span>) \</span><br><span class="line">    .write \</span><br><span class="line">    .<span class="built_in">format</span>(<span class="string">&#x27;jdbc&#x27;</span>) \</span><br><span class="line">    .mode(<span class="string">&#x27;overwrite&#x27;</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;driver&#x27;</span>, <span class="string">&#x27;com.mysql.jdbc.Driver&#x27;</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;url&#x27;</span>, <span class="string">&#x27;jdbc:mysql://node1:3306?serverTimezone=UTC&amp;characterEncoding=utf8&#x27;</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;dbtable&#x27;</span>, <span class="string">&#x27;test_ads.payType_percent&#x27;</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;user&#x27;</span>, <span class="string">&#x27;root&#x27;</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;password&#x27;</span>, <span class="string">&#x27;hadoop&#x27;</span>) \</span><br><span class="line">    .save()</span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    保存模式：</span></span><br><span class="line"><span class="string">    第一种：Append 追加模式，当数据存在时，继续追加；</span></span><br><span class="line"><span class="string">    第二种：Overwrite 覆写模式，当数据存在时，覆写以前数据，存储当前最新数据；</span></span><br><span class="line"><span class="string">    第三种：ErrorIfExists 存在及报错；</span></span><br><span class="line"><span class="string">    第四种：Ignore 忽略，数据存在时不做任何操作；</span></span><br><span class="line"><span class="string">    实际项目依据具体业务情况选择保存模式，通常选择Append和Overwrite模式。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><p>pySpark提供两种查询风格，一种是DSL，另一种是SQL风格。个人喜欢SQL风格，因为自己比较熟悉SQL。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># SQL风格</span></span><br><span class="line"><span class="comment"># 将df注册为临时表</span></span><br><span class="line">data_df.createOrReplaceTempView(<span class="string">&#x27;t_table&#x27;</span>)</span><br><span class="line"></span><br><span class="line">countryConfirms = spark.sql(<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    select country, count(distinct InvoiceNO) as confirms</span></span><br><span class="line"><span class="string">    from t_table</span></span><br><span class="line"><span class="string">    where InvoiceNO not like &#x27;C%&#x27;</span></span><br><span class="line"><span class="string">    group by country</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># DSL风格</span></span><br><span class="line"><span class="keyword">import</span> pyspark.sql.functions <span class="keyword">as</span> F</span><br><span class="line">countryReturnInvoiceDF = data \</span><br><span class="line">    .<span class="built_in">filter</span>(<span class="string">&quot;InvoiceNo like &#x27;C%&#x27;&quot;</span>) \</span><br><span class="line">    .groupBy(<span class="string">&#x27;country&#x27;</span>) \</span><br><span class="line">    .agg(F.countDistinct(<span class="string">&#x27;InvoiceNo&#x27;</span>).alias(<span class="string">&#x27;cnt&#x27;</span>)) \</span><br><span class="line">    .orderBy(<span class="string">&#x27;cnt&#x27;</span>, ascending=<span class="literal">False</span>) \</span><br><span class="line">    .limit(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据清洗"><a href="#数据清洗" class="headerlink" title="数据清洗"></a>数据清洗</h3><p>关键函数</p>
+<ul>
+<li>时间转换<ul>
+<li>from_unixtime</li>
+<li>to_timestamp</li>
+</ul>
+</li>
+<li>空值处理<ul>
+<li>dropna</li>
+<li>fillna</li>
+</ul>
+</li>
+<li>重复值处理<ul>
+<li>dropDuplicates</li>
+<li>monotonically_increasing_id</li>
+</ul>
+</li>
+</ul>
+<p><strong>结合实际业务需求，不能上来就一通乱删！</strong></p>
+<h4 id="空值填充"><a href="#空值填充" class="headerlink" title="空值填充"></a>空值填充</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">df_miss = spark.createDataFrame([</span><br><span class="line">    (<span class="number">1</span>, <span class="number">143.5</span>, <span class="number">5.6</span>, <span class="number">28</span>, <span class="string">&#x27;M&#x27;</span>, <span class="number">100000</span>),</span><br><span class="line">    (<span class="number">2</span>, <span class="number">167.2</span>, <span class="number">5.4</span>, <span class="number">45</span>, <span class="string">&#x27;M&#x27;</span>, <span class="literal">None</span>),</span><br><span class="line">    (<span class="number">3</span>, <span class="literal">None</span>, <span class="number">5.2</span>, <span class="literal">None</span>, <span class="literal">None</span>, <span class="literal">None</span>),</span><br><span class="line">    (<span class="number">4</span>, <span class="number">144.5</span>, <span class="number">5.9</span>, <span class="number">33</span>, <span class="string">&#x27;M&#x27;</span>, <span class="literal">None</span>),</span><br><span class="line">    (<span class="number">5</span>, <span class="number">133.2</span>, <span class="number">5.7</span>, <span class="number">54</span>, <span class="string">&#x27;F&#x27;</span>, <span class="literal">None</span>),</span><br><span class="line">    (<span class="number">6</span>, <span class="number">124.1</span>, <span class="number">5.2</span>, <span class="literal">None</span>, <span class="string">&#x27;F&#x27;</span>, <span class="literal">None</span>),</span><br><span class="line">    (<span class="number">7</span>, <span class="number">129.2</span>, <span class="number">5.3</span>, <span class="number">42</span>, <span class="string">&#x27;M&#x27;</span>, <span class="number">76000</span>), ],</span><br><span class="line">    [<span class="string">&#x27;id&#x27;</span>, <span class="string">&#x27;weight&#x27;</span>, <span class="string">&#x27;height&#x27;</span>, <span class="string">&#x27;age&#x27;</span>, <span class="string">&#x27;gender&#x27;</span>, <span class="string">&#x27;income&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># todo 查询每行有几个缺失值</span></span><br><span class="line">row__collect = df_miss.rdd.<span class="built_in">map</span>(<span class="keyword">lambda</span> row: (row[<span class="string">&#x27;id&#x27;</span>], <span class="built_in">sum</span>([c == <span class="literal">None</span> <span class="keyword">for</span> c <span class="keyword">in</span> row]))).collect()</span><br><span class="line"><span class="built_in">print</span>(row__collect)</span><br><span class="line"></span><br><span class="line"><span class="comment"># todo 查询每列的缺失比例</span></span><br><span class="line"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> functions <span class="keyword">as</span> F</span><br><span class="line"></span><br><span class="line">df_miss.agg(*[(<span class="number">1</span> - F.count(c) / F.count(<span class="string">&#x27;*&#x27;</span>)).alias(c + <span class="string">&#x27;_missing_ratio&#x27;</span>) <span class="keyword">for</span> c <span class="keyword">in</span> df_miss.columns]).show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># todo 查询每列的缺失数</span></span><br><span class="line"></span><br><span class="line">df_miss.agg(*[(F.count(<span class="string">&#x27;*&#x27;</span>) - F.count(c)).alias(c + <span class="string">&#x27;_missing_cnt&#x27;</span>) <span class="keyword">for</span> c <span class="keyword">in</span> df_miss.columns]).show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># todo income字段缺失比例高于60% 故丢弃</span></span><br><span class="line"></span><br><span class="line">df_miss_new = df_miss.select([c <span class="keyword">for</span> c <span class="keyword">in</span> df_miss.columns <span class="keyword">if</span> c != <span class="string">&#x27;income&#x27;</span>])</span><br><span class="line">df_miss_new.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># todo 求出每列平均值</span></span><br><span class="line"></span><br><span class="line">list_mean = df_miss_new.agg(*[F.mean(c).alias(c) <span class="keyword">for</span> c <span class="keyword">in</span> df_miss_new.columns <span class="keyword">if</span> c != <span class="string">&#x27;gender&#x27;</span>]) \</span><br><span class="line">    .toPandas() \</span><br><span class="line">    .to_dict(orient=<span class="string">&#x27;records&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">list_mean[<span class="string">&#x27;gender&#x27;</span>] = <span class="string">&#x27;missing&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(list_mean)</span><br><span class="line"></span><br><span class="line"><span class="comment"># todo 填充缺失值</span></span><br><span class="line">cleaned_df = df_miss_new.fillna(list_mean)</span><br><span class="line">cleaned_df.show()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">df = spark.read.json(<span class="string">&#x27;file:///export/data/mini.json&#x27;</span>) \</span><br><span class="line">    .<span class="built_in">filter</span>(<span class="string">&quot;receivable &lt; 10000 and storeProvince != &#x27;null&#x27;&quot;</span>) \</span><br><span class="line">    .dropna(thresh=<span class="number">3</span>, subset=[<span class="string">&#x27;storeProvince&#x27;</span>, <span class="string">&#x27;storeCity&#x27;</span>, <span class="string">&#x27;storeDistrict&#x27;</span>]) \</span><br><span class="line">    .withColumn(<span class="string">&#x27;date&#x27;</span>, F.from_unixtime(F.col(<span class="string">&#x27;dateTS&#x27;</span>).substr(<span class="number">0</span>, <span class="number">10</span>), <span class="string">&#x27;yyyy-MM-dd&#x27;</span>))</span><br></pre></td></tr></table></figure>
+
+<h4 id="重复值过滤"><a href="#重复值过滤" class="headerlink" title="重复值过滤"></a>重复值过滤</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除完全一样的记录</span></span><br><span class="line">df2 = df.dropDuplicates()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 除了某些字段，删除其他字段值都完全一样的记录</span></span><br><span class="line">df3 = df2.dropDuplicates(subset = [c <span class="keyword">for</span> c <span class="keyword">in</span> df2.columns <span class="keyword">if</span> c!=<span class="string">&#x27;id&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看某一列是否有重复值</span></span><br><span class="line"><span class="keyword">import</span> pyspark.sql.functions <span class="keyword">as</span> fn</span><br><span class="line">df3.agg(fn.count(<span class="string">&#x27;id&#x27;</span>).alias(<span class="string">&#x27;id_count&#x27;</span>),fn.countDistinct(<span class="string">&#x27;id&#x27;</span>).alias(<span class="string">&#x27;distinct_id_count&#x27;</span>)).collect()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对于id这种无意义的列值重复，添加另外一列自增id</span></span><br><span class="line">df3.withColumn(<span class="string">&#x27;new_id&#x27;</span>,fn.monotonically_increasing_id()).show()</span><br></pre></td></tr></table></figure>
+
+<h2 id="共享变量"><a href="#共享变量" class="headerlink" title="共享变量"></a>共享变量</h2><h3 id="广播变量"><a href="#广播变量" class="headerlink" title="广播变量"></a>广播变量</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo 广播变量</span></span><br><span class="line">kv_fruit = sc.parallelize([(<span class="number">1</span>, <span class="string">&#x27;apple&#x27;</span>), (<span class="number">2</span>, <span class="string">&#x27;orange&#x27;</span>), (<span class="number">3</span>, <span class="string">&#x27;banana&#x27;</span>), (<span class="number">4</span>, <span class="string">&#x27;grape&#x27;</span>)])</span><br><span class="line"><span class="comment"># 转为字典方便查询</span></span><br><span class="line">dict_fruit = kv_fruit.collectAsMap()</span><br><span class="line"><span class="comment"># 创建广播变量</span></span><br><span class="line">broadcast_dict_fruit = sc.broadcast(dict_fruit)</span><br><span class="line">fruit_ids = sc.parallelize([<span class="number">2</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">3</span>])</span><br><span class="line"><span class="comment"># 用value属性取出变量值</span></span><br><span class="line">result = fruit_ids.<span class="built_in">map</span>(<span class="keyword">lambda</span> i: broadcast_dict_fruit.value[i])</span><br></pre></td></tr></table></figure>
+
+<h3 id="累加器"><a href="#累加器" class="headerlink" title="累加器"></a>累加器</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义累加器，num初始值为10</span></span><br><span class="line">num = sc.accumulator(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#定义累加函数实现累加功能</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">f</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">global</span> num</span><br><span class="line">    num.add(x)</span><br><span class="line"></span><br><span class="line">rdd = sc.parallelize([<span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>])</span><br><span class="line"><span class="comment"># 遍历rdd中的每个元素，进行求和</span></span><br><span class="line">rdd.foreach(f)</span><br><span class="line"><span class="comment"># final为150</span></span><br><span class="line">final = num.value</span><br><span class="line"></span><br><span class="line"><span class="comment">#缓存rdd</span></span><br><span class="line">rdd.cache()</span><br></pre></td></tr></table></figure>
+
+<p>累加器也是惰性求值，<code>foreach</code>属于action算子，因此能得到正确结果；若没用action算子直接取值，得到的是初始值。</p>
+<p><strong>注意，在使用完累加器后要记得及时缓存RDD，不然下一次使用action算子会重复累加，得到错误结果！</strong></p>
+<h2 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h2><h3 id="Cache-x2F-Persist"><a href="#Cache-x2F-Persist" class="headerlink" title="Cache&#x2F;Persist"></a>Cache&#x2F;Persist</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo cache / persist</span></span><br><span class="line"><span class="keyword">from</span> pyspark.storagelevel <span class="keyword">import</span> StorageLevel</span><br><span class="line"></span><br><span class="line"><span class="comment"># 内存级持久化</span></span><br><span class="line">rdd1.cache()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 内存和硬盘上持久化</span></span><br><span class="line">rdd2.persist(storageLevel=StorageLevel.MEMORY_AND_DISK)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用action算子使缓存生效</span></span><br><span class="line">rdd1.count()</span><br><span class="line">rdd2.count()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 释放</span></span><br><span class="line">rdd1.unpersist()</span><br><span class="line">rdd2.unpersist()</span><br></pre></td></tr></table></figure>
+
+<h3 id="Checkpoint"><a href="#Checkpoint" class="headerlink" title="Checkpoint"></a>Checkpoint</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置检查点目录</span></span><br><span class="line">sc.setCheckpointDir(<span class="string">&quot;hdfs://export/data/checkpoint&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启用检查点</span></span><br><span class="line">rdd1.checkpoint()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用任意action算子让检查点生效 备份rdd结果</span></span><br><span class="line">rdd1.count()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 再次执行 从检查点读取数据</span></span><br><span class="line">rdd1.count()</span><br></pre></td></tr></table></figure>
+
+<h2 id="UDF-用户定义函数"><a href="#UDF-用户定义函数" class="headerlink" title="UDF 用户定义函数"></a>UDF 用户定义函数</h2><h3 id="spark-udf"><a href="#spark-udf" class="headerlink" title="spark udf"></a>spark udf</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo 各个省份的支付类型比例</span></span><br><span class="line"><span class="keyword">from</span> pyspark.sql.functions <span class="keyword">import</span> udf</span><br><span class="line"></span><br><span class="line">df_joined_top3.select(<span class="string">&#x27;storeProvince&#x27;</span>, <span class="string">&#x27;payType&#x27;</span>).createOrReplaceTempView(<span class="string">&#x27;pp&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@udf(<span class="params"><span class="string">&#x27;string&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">udf_to_percent</span>(<span class="params">p</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">str</span>(<span class="built_in">round</span>(p * <span class="number">100</span>)) + <span class="string">&#x27;%&#x27;</span></span><br><span class="line"></span><br><span class="line">payType_percent = spark.sql(<span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    SELECT storeProvince, payType, (COUNT(*) / pcnt) AS percent</span></span><br><span class="line"><span class="string">    FROM (</span></span><br><span class="line"><span class="string">        SELECT *, COUNT(*) OVER(PARTITION BY storeProvince) AS pcnt FROM pp</span></span><br><span class="line"><span class="string">    ) AS sub </span></span><br><span class="line"><span class="string">    GROUP BY storeProvince, payType, pcnt;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>).select(<span class="string">&#x27;storeProvince&#x27;</span>, <span class="string">&#x27;payType&#x27;</span>, udf_to_percent(<span class="string">&#x27;percent&#x27;</span>))</span><br></pre></td></tr></table></figure>
+
+<h3 id="pandas-udf"><a href="#pandas-udf" class="headerlink" title="pandas udf"></a>pandas udf</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo 各个省份的支付类型比例</span></span><br><span class="line"><span class="keyword">from</span> pyspark.sql.functions <span class="keyword">import</span> pandas_udf</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启用Arrow传输</span></span><br><span class="line">spark.conf.<span class="built_in">set</span>(<span class="string">&quot;spark.sql.execution.arrow.pyspark.enabled&quot;</span>, <span class="string">&quot;true&quot;</span>)</span><br><span class="line"></span><br><span class="line">df_joined_top3.select(<span class="string">&#x27;storeProvince&#x27;</span>, <span class="string">&#x27;payType&#x27;</span>).createOrReplaceTempView(<span class="string">&#x27;pp&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">str</span>(<span class="built_in">round</span>(<span class="built_in">float</span>(x) * <span class="number">100</span>)) + <span class="string">&#x27;%&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 pandas udf 需要注意类型转换，再用apply方法转换序列里的每一个元素！</span></span><br><span class="line"><span class="meta">@pandas_udf(<span class="params"><span class="string">&#x27;string&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">udf_to_percent2</span>(<span class="params">p: pd.Series</span>) -&gt; pd.Series:</span><br><span class="line">    p = p.astype(<span class="built_in">str</span>).apply(test)</span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line"></span><br><span class="line">payType_percent = spark.sql(<span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    SELECT storeProvince, payType, (COUNT(*) / pcnt) AS percent</span></span><br><span class="line"><span class="string">    FROM (</span></span><br><span class="line"><span class="string">        SELECT *, COUNT(*) OVER(PARTITION BY storeProvince) AS pcnt FROM pp</span></span><br><span class="line"><span class="string">    ) AS sub </span></span><br><span class="line"><span class="string">    GROUP BY storeProvince, payType, pcnt;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>).select(<span class="string">&#x27;storeProvince&#x27;</span>, <span class="string">&#x27;payType&#x27;</span>, udf_to_percent2(<span class="string">&#x27;percent&#x27;</span>))</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E6%A6%82%E5%BF%B5%E7%AF%87.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mr Fu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黑洞">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E6%A6%82%E5%BF%B5%E7%AF%87.html" class="post-title-link" itemprop="url">Pyspark学习之概念篇</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-05-31 11:43:24 / 修改时间：11:50:45" itemprop="dateCreated datePublished" datetime="2022-05-31T11:43:24+08:00">2022-05-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">大数据开发</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E6%A6%82%E5%BF%B5%E7%AF%87.html#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="大数据开发/pyspark学习之概念篇.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>本文只是站长的学习记录，内容并不完善。</p>
+</blockquote>
+<h2 id="RDD"><a href="#RDD" class="headerlink" title="RDD"></a>RDD</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>RDD（Resilient Distributed Dataset）叫做弹性分布式数据集，是Spark中最基本的数据抽象，代表一个<strong>不可变（只读）、可分区、可并行计算</strong>的集合。</p>
+<ul>
+<li>Dataset：一个数据集合，用于存放数据的。</li>
+<li>Distributed：RDD中的数据是分布式存储的，可用于分布式计算。</li>
+<li>Resilient：RDD中的数据可以存储在内存中或者磁盘中。</li>
+</ul>
+<h3 id="五大特性"><a href="#五大特性" class="headerlink" title="五大特性"></a>五大特性</h3><ol>
+<li><p>分区列表</p>
+<ul>
+<li>每个RDD都至少拥有一个分区或多个分区；</li>
+<li>对于RDD来说，每个分片都会被一个计算任务处理，分片数决定并行度；</li>
+<li>用户可以在创建RDD时指定RDD的分片个数，如果没有指定，那么就会采用默认值；</li>
+</ul>
+</li>
+<li><p>一个函数会被作用在每一个分区上</p>
+<ul>
+<li>Spark中RDD的计算是以分区为单位的，每一个算子都会被作用到每个分区上；</li>
+</ul>
+</li>
+<li><p>一个RDD会依赖于其他多个RDD</p>
+<ul>
+<li>RDD的每次转换都会生成一个新的RDD，所以RDD之间就会形成类似于流水线一样的前后依赖关系。在部分分区数据丢失时，Spark可以通过这个依赖关系重新计算丢失的分区数据，而不是对RDD的所有分区进行重新计算（Spark的容错机制）；</li>
+</ul>
+</li>
+<li><p>对于Key-Value类型的RDD会有一个Partitioner，即RDD的分区函数；</p>
+<ul>
+<li>当前Spark中实现了两种类型的分区函数，一个是基于哈希的HashPartitioner，另外一个是基于范围的RangePartitioner；</li>
+<li>只有Key-Value类型的RDD，才会有Partitioner，非Key-Value的RDD，其Parititioner的值是None；</li>
+<li>Partitioner不但决定了RDD本身的分片数量，也决定了父RDD（Parent RDD）Shuffle输出时的分区数量；</li>
+</ul>
+</li>
+<li><p>分区位置优先级列表</p>
+<ul>
+<li>Spark在进行任务调度的时候，会尽可能选择那些存有数据的worker节点来进行任务计算；</li>
+<li>对于一个HDFS文件来说，这个列表保存的就是每个Partition所在的块的位置；</li>
+</ul>
+</li>
+</ol>
+<h3 id="宽依赖与窄依赖"><a href="#宽依赖与窄依赖" class="headerlink" title="宽依赖与窄依赖"></a>宽依赖与窄依赖</h3><p>RDDs通过操作算子进行转换，转换得到的新RDD包含了从其他RDDs衍生所必需的信息，RDDs之间维护着这种血缘关系，也称之为依赖。如下图所示，依赖包括两种：一种是窄依赖，RDDs之间分区是一一对应的；另一种是宽依赖，下游RDD的每个分区与上游RDD(也称之为父RDD)的每个分区都有关，是多对多的关系。</p>
+<p><img data-src="/images/dependencies.png"></p>
+<h2 id="算子"><a href="#算子" class="headerlink" title="算子"></a>算子</h2><p>RDD是只读的，要想改变RDD中的数据，只能在现有的RDD基础上创建新的RDD。由一个RDD转换到另一个RDD，可以通过丰富的算子实现。</p>
+<p>RDD的操作算子包括两类，一类叫做transformations，它是用来将RDD进行转化，构建RDD的血缘关系；另一类叫做actions，它是用来触发RDD的计算，得到RDD的相关计算结果或者将RDD保存的文件系统中。</p>
+<ul>
+<li><p>常见转换算子（Transformations）：<code>map()</code> <code>filter()</code> <code>reduceByKey()</code></p>
+<ul>
+<li>返回一个新的RDD。</li>
+<li>所有Transformation函数都是惰性求值，只会建立RDD间的关系；不会立即执行，需要Action函数触发。</li>
+</ul>
+</li>
+<li><p>常见行动算子（Actions）：<code>collect()</code> <code>count()</code> <code>saveAsFile()</code></p>
+<ul>
+<li>返回计算结果或无返回值</li>
+<li>Transformation操作只是建立计算关系，而Action操作才是实际的执行者。每个Action操作都会调用SparkContext的runJob方法向集群正式提交请求，所以每个Action操作对应一个Job。</li>
+</ul>
+</li>
+</ul>
+<h2 id="共享变量"><a href="#共享变量" class="headerlink" title="共享变量"></a>共享变量</h2><p>在默认情况下，当Spark在集群的多个不同节点的多个任务上并行运行一个函数时，它会把函数中涉及到的每个变量，在每个任务上都生成一个副本。但是，有时候需要在多个任务之间共享变量，或者在任务（Task）和任务控制节点(Driver Program)之间共享变量。<br>为了满足这种需求，Spark提供了两种类型的变量：</p>
+<ol>
+<li>广播变量（Broadcast Variables）<ul>
+<li>广播变量用来把变量在所有节点的内存之间进行共享，在每个机器上缓存一个只读的变量，而不是为机器上的每个任务都生成一个副本；</li>
+</ul>
+</li>
+<li>累加器（Accumulators）<ul>
+<li>累加器支持在所有不同节点之间进行累加计算(比如计数或者求和)；</li>
+</ul>
+</li>
+</ol>
+<h3 id="广播变量"><a href="#广播变量" class="headerlink" title="广播变量"></a>广播变量</h3><p>广播变量允许程序员将一个只读的变量缓存在每台机器上，而不用在任务之间传递变量。广播变量可被用于有效地给每个节点输入大数据集副本。Spark还尝试使用高效地广播算法来分发变量，进而减少通信的开销。 Spark的动作通过一系列的步骤执行，这些步骤由分布式的洗牌操作分开。Spark自动地广播每个步骤每个任务需要的通用数据。这些广播数据被序列化地缓存，在运行任务之前被反序列化出来。这意味着当我们需要在多个阶段的任务之间使用相同的数据，或者以反序列化形式缓存数据是十分重要的时候，显式地创建广播变量才有用。</p>
+<p><img data-src="/images/broadcast.png"></p>
+<h3 id="累加器"><a href="#累加器" class="headerlink" title="累加器"></a>累加器</h3><p>在算子中我们可以使用driver程序中定义的变量，但是集群中运行的每个任务都会得到这些变量的新副本，更新这些副本的值也不会影响驱动器中的对应变量。这时使用累加器就可以实现我们想要的效果。</p>
+<p>Spark提供的Accumulator，主要用于多个节点对一个变量进行共享性的操作。Accumulator只提供了累加的功能，即确提供了多个task对一个变量并行操作的功能。但是task只能对Accumulator进行累加操作，不能读取Accumulator的值，只有Driver程序可以读取Accumulator的值。创建的Accumulator变量的值能够在Spark Web UI上看到，在创建时应该尽量为其命名。</p>
+<h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><p><strong>由于RDD仅记录一系列转换操作，如果在使用累加器后没有及时缓存（cache），每次执行action算子都会从上游RDD开始计算，重复累加得到错误的结果。</strong></p>
+<h2 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h2><p>在实际开发中某些RDD的计算或转换可能会比较耗费时间，如果这些RDD后续还会频繁的被使用到，那么可以将这些RDD进行持久化，这样下次再使用到的时候就不用再重新计算了，提高了程序运行的效率。</p>
+<h3 id="Cache-x2F-Persist"><a href="#Cache-x2F-Persist" class="headerlink" title="Cache&#x2F;Persist"></a>Cache&#x2F;Persist</h3><p>Spark速度非常快的原因之一，就是在不同操作中可以在内存中持久化或者缓存数据集。当持久化某个RDD后，每一个节点都将把计算分区结果保存在内存中，在此RDD或衍生出的RDD进行的其他动作中重用。这使得后续的动作变得更加迅速。RDD相关的持久化和缓存，是Spark最重要的特征之一。可以说，缓存是Spark构建迭代式算法和快速交互式查询的关键。</p>
+<h2 id="Checkpoint"><a href="#Checkpoint" class="headerlink" title="Checkpoint"></a>Checkpoint</h2><p>RDD的数据可以缓存，把数据放在内存中，虽然是快速的，但是也是最不可靠的；把数据放在磁盘上，也不是完全可靠的！例如磁盘会损坏等。</p>
+<p>Checkpoint的诞生就是为了更加可靠的数据持久化，在Checkpoint的时候一般把数据放在HDFS上。借助HDFS天生的高容错、高可靠来实现数据最大程度上的安全，实现了RDD的容错和高可用。</p>
+<h3 id="持久化和Checkpoint的区别"><a href="#持久化和Checkpoint的区别" class="headerlink" title="持久化和Checkpoint的区别"></a>持久化和Checkpoint的区别</h3><ol>
+<li><p>存储位置</p>
+<ul>
+<li>Persist和Cache只能保存在本地的磁盘和内存中(或者堆外内存)；</li>
+<li>Checkpoint可以保存数据到HDFS这类可靠的存储上；</li>
+</ul>
+</li>
+<li><p>生命周期</p>
+<ul>
+<li>使用Cache和Persist的RDD（计算结果）会在程序结束后被清除或者手动调用unpersist方法；</li>
+<li>使用Checkpoint的RDD（计算结果）在程序结束后依然存在，不会被删除；</li>
+</ul>
+</li>
+<li><p>依赖链</p>
+<ul>
+<li>Persist和Cache不会丢掉RDD间的依赖链关系，因为这种缓存是不可靠的，如果出现了一些错误（例如Executor宕机），需要通过回溯依赖链重新计算出来；</li>
+<li>Checkpoint会丢弃依赖链，因为Checkpoint会把结果保存在HDFS这类存储中，更加的安全可靠，一般不需要回溯依赖链；</li>
+</ul>
+</li>
+</ol>
+<p><strong>Spark容错机制：首先会查看RDD是否被Cache，如果被Cache到内存或磁盘，直接获取；否则查看Checkpoint所指定的HDFS中是否存在相应数据，如果都没有则直接从父RDD开始重新计算还原。</strong></p>
+<h2 id="Dataframe"><a href="#Dataframe" class="headerlink" title="Dataframe"></a>Dataframe</h2><p>在Spark中，DataFrame是一种以RDD为基础的分布式数据集，类似于传统数据库中的二维表格。DataFrame与RDD的主要区别在于，前者带有schema元信息，即DataFrame所表示的二维表数据集的每一列都带有名称和类型。DataFrame中每条数据封装在Row中，Row表示每行数据。</p>
+<p><img data-src="/images/rdd%20dataframe%20contrast.png"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E6%97%A5%E8%AE%B0/%E5%91%A8%E8%AE%B04.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mr Fu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黑洞">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E6%97%A5%E8%AE%B0/%E5%91%A8%E8%AE%B04.html" class="post-title-link" itemprop="url">周记4</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-05-11 09:43:51 / 修改时间：09:44:31" itemprop="dateCreated datePublished" datetime="2022-05-11T09:43:51+08:00">2022-05-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%97%A5%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">日记</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/%E6%97%A5%E8%AE%B0/%E5%91%A8%E8%AE%B04.html#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="日记/周记4.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B9%8B%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -526,100 +936,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B9%8B%E8%A1%8C%E5%88%97%E8%BD%AC%E6%8D%A2.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Mr Fu">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="黑洞">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B9%8B%E8%A1%8C%E5%88%97%E8%BD%AC%E6%8D%A2.html" class="post-title-link" itemprop="url">Hive之行列转换</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-04-29 09:07:39 / 修改时间：09:15:17" itemprop="dateCreated datePublished" datetime="2022-04-29T09:07:39+08:00">2022-04-29</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">大数据开发</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B9%8B%E8%A1%8C%E5%88%97%E8%BD%AC%E6%8D%A2.html#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="大数据开发/Hive之行列转换.html" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="explode-函数"><a href="#explode-函数" class="headerlink" title="explode 函数"></a>explode 函数</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><code>explode</code>函数属于UDTF函数（表生成），输入一行，输出多行。从英文直译过来是“爆炸”的意思，因此俗称爆炸函数。</p>
-<h3 id="语法和效果"><a href="#语法和效果" class="headerlink" title="语法和效果"></a>语法和效果</h3><p><code>explode</code>函数接收<code>map</code>或者<code>array</code>类型的数据作为参数。在生成的表中，每个元素将单独成为一行数据。</p>
-<ul>
-<li><code>explode(array)</code>将<code>array</code>列表里的每个元素生成一行；</li>
-<li><code>explode(map)</code>将<code>map</code>里的每一对元素作为一行，其中<code>key</code>为一列，<code>value</code>为一列；</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Hive%E4%B9%8B%E8%A1%8C%E5%88%97%E8%BD%AC%E6%8D%A2.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/Sqoop%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -899,193 +1215,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%8B%89%E9%93%BE%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Mr Fu">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="黑洞">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%8B%89%E9%93%BE%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.html" class="post-title-link" itemprop="url">拉链表的实现原理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-04-18 06:24:42 / 修改时间：06:49:32" itemprop="dateCreated datePublished" datetime="2022-04-18T06:24:42+08:00">2022-04-18</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">大数据开发</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%8B%89%E9%93%BE%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.html#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="大数据开发/拉链表的实现原理.html" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="什么是拉链表"><a href="#什么是拉链表" class="headerlink" title="什么是拉链表"></a>什么是拉链表</h2><blockquote>
-<p>拉链表是针对数据仓库设计中表存储数据的方式而定义的，顾名思义，所谓拉链，就是记录历史。<br>记录一个事物从开始，一直到当前状态的所有变化的信息。<br>Reference: <a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1752848">https://cloud.tencent.com/developer/article/1752848</a></p>
-</blockquote>
-<p>拉链表是一种维护<strong>缓慢渐变维</strong>的方式，可以让我们方便地查看某些维度在历史阶段的状态。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%8B%89%E9%93%BE%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%95%B0%E4%BB%93%E5%BB%BA%E6%A8%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Mr Fu">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="黑洞">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%95%B0%E4%BB%93%E5%BB%BA%E6%A8%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html" class="post-title-link" itemprop="url">数仓建模学习笔记</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-04-15 16:34:08" itemprop="dateCreated datePublished" datetime="2022-04-15T16:34:08+08:00">2022-04-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-04-16 00:25:15" itemprop="dateModified" datetime="2022-04-16T00:25:15+08:00">2022-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">大数据开发</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%95%B0%E4%BB%93%E5%BB%BA%E6%A8%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="大数据开发/数仓建模学习笔记.html" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="什么是数据仓库"><a href="#什么是数据仓库" class="headerlink" title="什么是数据仓库"></a>什么是数据仓库</h3><p>存储数据的仓库，主要是用于存储过去既定发生的历史数据，对这些数据进行数据分析的操作，从而对未来提供决策支持。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/%E6%95%B0%E4%BB%93%E5%BB%BA%E6%A8%A1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1155,7 +1284,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1168,7 +1297,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

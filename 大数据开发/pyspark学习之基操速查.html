@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ovo.lol","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文只是站长的学习记录，内容并不完善，有时间继续补充。   Driver初始化123456789101112131415161718192021222324252627282930from pyspark.sql import SparkSessionimport os# 设置环境变量os.environ[&amp;#x27;SPARK_HOME&amp;#x27;] &#x3D; &amp;#x27;&#x2F;export&#x2F;serv">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pyspark学习之基操速查">
+<meta property="og:url" content="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E6%93%8D%E9%80%9F%E6%9F%A5.html">
+<meta property="og:site_name" content="黑洞">
+<meta property="og:description" content="本文只是站长的学习记录，内容并不完善，有时间继续补充。   Driver初始化123456789101112131415161718192021222324252627282930from pyspark.sql import SparkSessionimport os# 设置环境变量os.environ[&amp;#x27;SPARK_HOME&amp;#x27;] &#x3D; &amp;#x27;&#x2F;export&#x2F;serv">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-31T03:44:24.000Z">
+<meta property="article:modified_time" content="2022-05-31T03:45:25.101Z">
+<meta property="article:author" content="Mr Fu">
+<meta property="article:tag" content="Spark">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E6%93%8D%E9%80%9F%E6%9F%A5.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Pyspark学习之基操速查 | 黑洞</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">黑洞</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">这里藏着一些独特的想法</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E6%93%8D%E9%80%9F%E6%9F%A5.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Mr Fu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="黑洞">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Pyspark学习之基操速查
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-05-31 11:44:24 / 修改时间：11:45:25" itemprop="dateCreated datePublished" datetime="2022-05-31T11:44:24+08:00">2022-05-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">大数据开发</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E6%93%8D%E9%80%9F%E6%9F%A5.html#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="大数据开发/pyspark学习之基操速查.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<blockquote>
+<p>本文只是站长的学习记录，内容并不完善，有时间继续补充。</p>
+</blockquote>
+</blockquote>
+<h2 id="Driver初始化"><a href="#Driver初始化" class="headerlink" title="Driver初始化"></a>Driver初始化</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> SparkSession</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置环境变量</span></span><br><span class="line">os.environ[<span class="string">&#x27;SPARK_HOME&#x27;</span>] = <span class="string">&#x27;/export/server/spark&#x27;</span></span><br><span class="line">PYSPARK_PYTHON = <span class="string">&quot;/root/anaconda3/envs/pyspark_env/bin/python&quot;</span></span><br><span class="line"><span class="comment"># 当存在多个版本时，不指定很可能会导致出错</span></span><br><span class="line">os.environ[<span class="string">&quot;PYSPARK_PYTHON&quot;</span>] = PYSPARK_PYTHON</span><br><span class="line">os.environ[<span class="string">&quot;PYSPARK_DRIVER_PYTHON&quot;</span>] = PYSPARK_PYTHON</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="comment"># todo 创建spark会话</span></span><br><span class="line">    spark = SparkSession.builder \</span><br><span class="line">        .appName(<span class="string">&#x27;first app&#x27;</span>) \</span><br><span class="line">        .master(<span class="string">&#x27;local[*]&#x27;</span>) \</span><br><span class="line">        .getOrCreate()</span><br><span class="line"></span><br><span class="line">    sc = spark.sparkContext</span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    master（driver运行的地方）可指定为以下几种：</span></span><br><span class="line"><span class="string">    本地模式 &#x27;local[*]&#x27;</span></span><br><span class="line"><span class="string">    Standalone &#x27;spark://node1:7077&#x27;</span></span><br><span class="line"><span class="string">    Standalone高可用 &#x27;spark://node1:7077,node2:7077&#x27;</span></span><br><span class="line"><span class="string">    Yarn集群 &#x27;yarn-cluster&#x27;</span></span><br><span class="line"><span class="string">    Yarn客户端 &#x27;yarn-client&#x27;</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 结束运行</span></span><br><span class="line">    spark.stop()</span><br></pre></td></tr></table></figure>
+
+<h2 id="RDD"><a href="#RDD" class="headerlink" title="RDD"></a>RDD</h2><h3 id="并行化创建"><a href="#并行化创建" class="headerlink" title="并行化创建"></a>并行化创建</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rdd1 = sc.parallelize([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>])</span><br></pre></td></tr></table></figure>
+
+<h3 id="读写"><a href="#读写" class="headerlink" title="读写"></a>读写</h3><h4 id="读取为rdd"><a href="#读取为rdd" class="headerlink" title="读取为rdd"></a>读取为rdd</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rdd1 = sc.textFile(<span class="string">&#x27;/export/data/a.txt&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="写"><a href="#写" class="headerlink" title="写"></a>写</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rdd1 = sc.textFile(<span class="string">&#x27;/export/data/log.txt&#x27;</span>)</span><br><span class="line">rdd1.saveAsTextFile(<span class="string">&#x27;hdfs://uv/result&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="小文件读取"><a href="#小文件读取" class="headerlink" title="小文件读取"></a>小文件读取</h3><p>在实际项目中，有时往往处理的数据文件属于小文件（每个文件数据数据量很小，比如KB，几十MB等），文件数量又很大，如果一个个文件读取为RDD的一个个分区，计算数据时很耗时性能低下，使用SparkContext中提供：wholeTextFiles类，专门读取小文件数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo 读取小文件</span></span><br><span class="line">resultRDD = sc.wholeTextFiles(<span class="string">&quot;file:///export/data/ratings100/&quot;</span>)</span><br><span class="line"><span class="comment"># 取分区数</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;whole textFile numpartitions:&quot;</span>, resultRDD.getNumPartitions())</span><br></pre></td></tr></table></figure>
+
+<p>如果从HDFS读取海量数据，应用运行在YARN上，默认情况下，RDD分区数目等于HDFS上Block块数目。</p>
+<h2 id="Dataframe"><a href="#Dataframe" class="headerlink" title="Dataframe"></a>Dataframe</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><h4 id="反射推断创建"><a href="#反射推断创建" class="headerlink" title="反射推断创建"></a>反射推断创建</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo 反射推断创建</span></span><br><span class="line"><span class="keyword">from</span> pyspark <span class="keyword">import</span> Row</span><br><span class="line"></span><br><span class="line">rdd = sc.parallelize([(<span class="string">&#x27;jack&#x27;</span>, <span class="number">18</span>), (<span class="string">&#x27;rose&#x27;</span>, <span class="number">16</span>)])</span><br><span class="line">schema_rdd = rdd.<span class="built_in">map</span>(<span class="keyword">lambda</span> p: Row(name=p[<span class="number">0</span>], age=<span class="built_in">int</span>(p[<span class="number">1</span>])))</span><br><span class="line">df_person = spark.createDataFrame(schema_rdd)</span><br></pre></td></tr></table></figure>
+
+<h4 id="StructType创建"><a href="#StructType创建" class="headerlink" title="StructType创建"></a>StructType创建</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo StructType方式</span></span><br><span class="line"><span class="keyword">from</span> pyspark.sql.types <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">rdd = sc.parallelize([(<span class="string">&#x27;jack&#x27;</span>, <span class="number">18</span>), (<span class="string">&#x27;rose&#x27;</span>, <span class="number">16</span>)])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义schema 分别是 列名 类型 是否允许为空</span></span><br><span class="line">schema = StructType([</span><br><span class="line">    StructField(<span class="string">&#x27;name&#x27;</span>, StringType(), <span class="literal">True</span>),</span><br><span class="line">    StructField(<span class="string">&#x27;age&#x27;</span>, IntegerType(), <span class="literal">True</span>)</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">df_person = spark.createDataFrame(rdd, schema=schema)</span><br></pre></td></tr></table></figure>
+
+<h3 id="读写-1"><a href="#读写-1" class="headerlink" title="读写"></a>读写</h3><h4 id="读取为Dataframe"><a href="#读取为Dataframe" class="headerlink" title="读取为Dataframe"></a>读取为Dataframe</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo 读取csv</span></span><br><span class="line">spark.read.<span class="built_in">format</span>(<span class="string">&#x27;csv&#x27;</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;header&#x27;</span>, <span class="literal">True</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;sep&#x27;</span>, <span class="string">&#x27;,&#x27;</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;inferSchema&#x27;</span>, <span class="literal">True</span>) \</span><br><span class="line">    .load(<span class="string">&#x27;/export/data/abc.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># todo 读取json</span></span><br><span class="line">peopleDF = spark.read.<span class="built_in">format</span>(<span class="string">&quot;json&quot;</span>).load(<span class="string">&quot;/datas/resources/people.json&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="写-1"><a href="#写-1" class="headerlink" title="写"></a>写</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo 导出到数据库</span></span><br><span class="line">payType_percent_df \</span><br><span class="line">    .coalesce(<span class="number">1</span>) \</span><br><span class="line">    .write \</span><br><span class="line">    .<span class="built_in">format</span>(<span class="string">&#x27;jdbc&#x27;</span>) \</span><br><span class="line">    .mode(<span class="string">&#x27;overwrite&#x27;</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;driver&#x27;</span>, <span class="string">&#x27;com.mysql.jdbc.Driver&#x27;</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;url&#x27;</span>, <span class="string">&#x27;jdbc:mysql://node1:3306?serverTimezone=UTC&amp;characterEncoding=utf8&#x27;</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;dbtable&#x27;</span>, <span class="string">&#x27;test_ads.payType_percent&#x27;</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;user&#x27;</span>, <span class="string">&#x27;root&#x27;</span>) \</span><br><span class="line">    .option(<span class="string">&#x27;password&#x27;</span>, <span class="string">&#x27;hadoop&#x27;</span>) \</span><br><span class="line">    .save()</span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    保存模式：</span></span><br><span class="line"><span class="string">    第一种：Append 追加模式，当数据存在时，继续追加；</span></span><br><span class="line"><span class="string">    第二种：Overwrite 覆写模式，当数据存在时，覆写以前数据，存储当前最新数据；</span></span><br><span class="line"><span class="string">    第三种：ErrorIfExists 存在及报错；</span></span><br><span class="line"><span class="string">    第四种：Ignore 忽略，数据存在时不做任何操作；</span></span><br><span class="line"><span class="string">    实际项目依据具体业务情况选择保存模式，通常选择Append和Overwrite模式。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><p>pySpark提供两种查询风格，一种是DSL，另一种是SQL风格。个人喜欢SQL风格，因为自己比较熟悉SQL。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># SQL风格</span></span><br><span class="line"><span class="comment"># 将df注册为临时表</span></span><br><span class="line">data_df.createOrReplaceTempView(<span class="string">&#x27;t_table&#x27;</span>)</span><br><span class="line"></span><br><span class="line">countryConfirms = spark.sql(<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    select country, count(distinct InvoiceNO) as confirms</span></span><br><span class="line"><span class="string">    from t_table</span></span><br><span class="line"><span class="string">    where InvoiceNO not like &#x27;C%&#x27;</span></span><br><span class="line"><span class="string">    group by country</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># DSL风格</span></span><br><span class="line"><span class="keyword">import</span> pyspark.sql.functions <span class="keyword">as</span> F</span><br><span class="line">countryReturnInvoiceDF = data \</span><br><span class="line">    .<span class="built_in">filter</span>(<span class="string">&quot;InvoiceNo like &#x27;C%&#x27;&quot;</span>) \</span><br><span class="line">    .groupBy(<span class="string">&#x27;country&#x27;</span>) \</span><br><span class="line">    .agg(F.countDistinct(<span class="string">&#x27;InvoiceNo&#x27;</span>).alias(<span class="string">&#x27;cnt&#x27;</span>)) \</span><br><span class="line">    .orderBy(<span class="string">&#x27;cnt&#x27;</span>, ascending=<span class="literal">False</span>) \</span><br><span class="line">    .limit(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据清洗"><a href="#数据清洗" class="headerlink" title="数据清洗"></a>数据清洗</h3><p>关键函数</p>
+<ul>
+<li>时间转换<ul>
+<li>from_unixtime</li>
+<li>to_timestamp</li>
+</ul>
+</li>
+<li>空值处理<ul>
+<li>dropna</li>
+<li>fillna</li>
+</ul>
+</li>
+<li>重复值处理<ul>
+<li>dropDuplicates</li>
+<li>monotonically_increasing_id</li>
+</ul>
+</li>
+</ul>
+<p><strong>结合实际业务需求，不能上来就一通乱删！</strong></p>
+<h4 id="空值填充"><a href="#空值填充" class="headerlink" title="空值填充"></a>空值填充</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">df_miss = spark.createDataFrame([</span><br><span class="line">    (<span class="number">1</span>, <span class="number">143.5</span>, <span class="number">5.6</span>, <span class="number">28</span>, <span class="string">&#x27;M&#x27;</span>, <span class="number">100000</span>),</span><br><span class="line">    (<span class="number">2</span>, <span class="number">167.2</span>, <span class="number">5.4</span>, <span class="number">45</span>, <span class="string">&#x27;M&#x27;</span>, <span class="literal">None</span>),</span><br><span class="line">    (<span class="number">3</span>, <span class="literal">None</span>, <span class="number">5.2</span>, <span class="literal">None</span>, <span class="literal">None</span>, <span class="literal">None</span>),</span><br><span class="line">    (<span class="number">4</span>, <span class="number">144.5</span>, <span class="number">5.9</span>, <span class="number">33</span>, <span class="string">&#x27;M&#x27;</span>, <span class="literal">None</span>),</span><br><span class="line">    (<span class="number">5</span>, <span class="number">133.2</span>, <span class="number">5.7</span>, <span class="number">54</span>, <span class="string">&#x27;F&#x27;</span>, <span class="literal">None</span>),</span><br><span class="line">    (<span class="number">6</span>, <span class="number">124.1</span>, <span class="number">5.2</span>, <span class="literal">None</span>, <span class="string">&#x27;F&#x27;</span>, <span class="literal">None</span>),</span><br><span class="line">    (<span class="number">7</span>, <span class="number">129.2</span>, <span class="number">5.3</span>, <span class="number">42</span>, <span class="string">&#x27;M&#x27;</span>, <span class="number">76000</span>), ],</span><br><span class="line">    [<span class="string">&#x27;id&#x27;</span>, <span class="string">&#x27;weight&#x27;</span>, <span class="string">&#x27;height&#x27;</span>, <span class="string">&#x27;age&#x27;</span>, <span class="string">&#x27;gender&#x27;</span>, <span class="string">&#x27;income&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># todo 查询每行有几个缺失值</span></span><br><span class="line">row__collect = df_miss.rdd.<span class="built_in">map</span>(<span class="keyword">lambda</span> row: (row[<span class="string">&#x27;id&#x27;</span>], <span class="built_in">sum</span>([c == <span class="literal">None</span> <span class="keyword">for</span> c <span class="keyword">in</span> row]))).collect()</span><br><span class="line"><span class="built_in">print</span>(row__collect)</span><br><span class="line"></span><br><span class="line"><span class="comment"># todo 查询每列的缺失比例</span></span><br><span class="line"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> functions <span class="keyword">as</span> F</span><br><span class="line"></span><br><span class="line">df_miss.agg(*[(<span class="number">1</span> - F.count(c) / F.count(<span class="string">&#x27;*&#x27;</span>)).alias(c + <span class="string">&#x27;_missing_ratio&#x27;</span>) <span class="keyword">for</span> c <span class="keyword">in</span> df_miss.columns]).show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># todo 查询每列的缺失数</span></span><br><span class="line"></span><br><span class="line">df_miss.agg(*[(F.count(<span class="string">&#x27;*&#x27;</span>) - F.count(c)).alias(c + <span class="string">&#x27;_missing_cnt&#x27;</span>) <span class="keyword">for</span> c <span class="keyword">in</span> df_miss.columns]).show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># todo income字段缺失比例高于60% 故丢弃</span></span><br><span class="line"></span><br><span class="line">df_miss_new = df_miss.select([c <span class="keyword">for</span> c <span class="keyword">in</span> df_miss.columns <span class="keyword">if</span> c != <span class="string">&#x27;income&#x27;</span>])</span><br><span class="line">df_miss_new.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># todo 求出每列平均值</span></span><br><span class="line"></span><br><span class="line">list_mean = df_miss_new.agg(*[F.mean(c).alias(c) <span class="keyword">for</span> c <span class="keyword">in</span> df_miss_new.columns <span class="keyword">if</span> c != <span class="string">&#x27;gender&#x27;</span>]) \</span><br><span class="line">    .toPandas() \</span><br><span class="line">    .to_dict(orient=<span class="string">&#x27;records&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">list_mean[<span class="string">&#x27;gender&#x27;</span>] = <span class="string">&#x27;missing&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(list_mean)</span><br><span class="line"></span><br><span class="line"><span class="comment"># todo 填充缺失值</span></span><br><span class="line">cleaned_df = df_miss_new.fillna(list_mean)</span><br><span class="line">cleaned_df.show()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">df = spark.read.json(<span class="string">&#x27;file:///export/data/mini.json&#x27;</span>) \</span><br><span class="line">    .<span class="built_in">filter</span>(<span class="string">&quot;receivable &lt; 10000 and storeProvince != &#x27;null&#x27;&quot;</span>) \</span><br><span class="line">    .dropna(thresh=<span class="number">3</span>, subset=[<span class="string">&#x27;storeProvince&#x27;</span>, <span class="string">&#x27;storeCity&#x27;</span>, <span class="string">&#x27;storeDistrict&#x27;</span>]) \</span><br><span class="line">    .withColumn(<span class="string">&#x27;date&#x27;</span>, F.from_unixtime(F.col(<span class="string">&#x27;dateTS&#x27;</span>).substr(<span class="number">0</span>, <span class="number">10</span>), <span class="string">&#x27;yyyy-MM-dd&#x27;</span>))</span><br></pre></td></tr></table></figure>
+
+<h4 id="重复值过滤"><a href="#重复值过滤" class="headerlink" title="重复值过滤"></a>重复值过滤</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除完全一样的记录</span></span><br><span class="line">df2 = df.dropDuplicates()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 除了某些字段，删除其他字段值都完全一样的记录</span></span><br><span class="line">df3 = df2.dropDuplicates(subset = [c <span class="keyword">for</span> c <span class="keyword">in</span> df2.columns <span class="keyword">if</span> c!=<span class="string">&#x27;id&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看某一列是否有重复值</span></span><br><span class="line"><span class="keyword">import</span> pyspark.sql.functions <span class="keyword">as</span> fn</span><br><span class="line">df3.agg(fn.count(<span class="string">&#x27;id&#x27;</span>).alias(<span class="string">&#x27;id_count&#x27;</span>),fn.countDistinct(<span class="string">&#x27;id&#x27;</span>).alias(<span class="string">&#x27;distinct_id_count&#x27;</span>)).collect()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对于id这种无意义的列值重复，添加另外一列自增id</span></span><br><span class="line">df3.withColumn(<span class="string">&#x27;new_id&#x27;</span>,fn.monotonically_increasing_id()).show()</span><br></pre></td></tr></table></figure>
+
+<h2 id="共享变量"><a href="#共享变量" class="headerlink" title="共享变量"></a>共享变量</h2><h3 id="广播变量"><a href="#广播变量" class="headerlink" title="广播变量"></a>广播变量</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo 广播变量</span></span><br><span class="line">kv_fruit = sc.parallelize([(<span class="number">1</span>, <span class="string">&#x27;apple&#x27;</span>), (<span class="number">2</span>, <span class="string">&#x27;orange&#x27;</span>), (<span class="number">3</span>, <span class="string">&#x27;banana&#x27;</span>), (<span class="number">4</span>, <span class="string">&#x27;grape&#x27;</span>)])</span><br><span class="line"><span class="comment"># 转为字典方便查询</span></span><br><span class="line">dict_fruit = kv_fruit.collectAsMap()</span><br><span class="line"><span class="comment"># 创建广播变量</span></span><br><span class="line">broadcast_dict_fruit = sc.broadcast(dict_fruit)</span><br><span class="line">fruit_ids = sc.parallelize([<span class="number">2</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">3</span>])</span><br><span class="line"><span class="comment"># 用value属性取出变量值</span></span><br><span class="line">result = fruit_ids.<span class="built_in">map</span>(<span class="keyword">lambda</span> i: broadcast_dict_fruit.value[i])</span><br></pre></td></tr></table></figure>
+
+<h3 id="累加器"><a href="#累加器" class="headerlink" title="累加器"></a>累加器</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义累加器，num初始值为10</span></span><br><span class="line">num = sc.accumulator(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#定义累加函数实现累加功能</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">f</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">global</span> num</span><br><span class="line">    num.add(x)</span><br><span class="line"></span><br><span class="line">rdd = sc.parallelize([<span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>])</span><br><span class="line"><span class="comment"># 遍历rdd中的每个元素，进行求和</span></span><br><span class="line">rdd.foreach(f)</span><br><span class="line"><span class="comment"># final为150</span></span><br><span class="line">final = num.value</span><br><span class="line"></span><br><span class="line"><span class="comment">#缓存rdd</span></span><br><span class="line">rdd.cache()</span><br></pre></td></tr></table></figure>
+
+<p>累加器也是惰性求值，<code>foreach</code>属于action算子，因此能得到正确结果；若没用action算子直接取值，得到的是初始值。</p>
+<p><strong>注意，在使用完累加器后要记得及时缓存RDD，不然下一次使用action算子会重复累加，得到错误结果！</strong></p>
+<h2 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h2><h3 id="Cache-x2F-Persist"><a href="#Cache-x2F-Persist" class="headerlink" title="Cache&#x2F;Persist"></a>Cache&#x2F;Persist</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo cache / persist</span></span><br><span class="line"><span class="keyword">from</span> pyspark.storagelevel <span class="keyword">import</span> StorageLevel</span><br><span class="line"></span><br><span class="line"><span class="comment"># 内存级持久化</span></span><br><span class="line">rdd1.cache()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 内存和硬盘上持久化</span></span><br><span class="line">rdd2.persist(storageLevel=StorageLevel.MEMORY_AND_DISK)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用action算子使缓存生效</span></span><br><span class="line">rdd1.count()</span><br><span class="line">rdd2.count()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 释放</span></span><br><span class="line">rdd1.unpersist()</span><br><span class="line">rdd2.unpersist()</span><br></pre></td></tr></table></figure>
+
+<h3 id="Checkpoint"><a href="#Checkpoint" class="headerlink" title="Checkpoint"></a>Checkpoint</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置检查点目录</span></span><br><span class="line">sc.setCheckpointDir(<span class="string">&quot;hdfs://export/data/checkpoint&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启用检查点</span></span><br><span class="line">rdd1.checkpoint()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用任意action算子让检查点生效 备份rdd结果</span></span><br><span class="line">rdd1.count()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 再次执行 从检查点读取数据</span></span><br><span class="line">rdd1.count()</span><br></pre></td></tr></table></figure>
+
+<h2 id="UDF-用户定义函数"><a href="#UDF-用户定义函数" class="headerlink" title="UDF 用户定义函数"></a>UDF 用户定义函数</h2><h3 id="spark-udf"><a href="#spark-udf" class="headerlink" title="spark udf"></a>spark udf</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo 各个省份的支付类型比例</span></span><br><span class="line"><span class="keyword">from</span> pyspark.sql.functions <span class="keyword">import</span> udf</span><br><span class="line"></span><br><span class="line">df_joined_top3.select(<span class="string">&#x27;storeProvince&#x27;</span>, <span class="string">&#x27;payType&#x27;</span>).createOrReplaceTempView(<span class="string">&#x27;pp&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@udf(<span class="params"><span class="string">&#x27;string&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">udf_to_percent</span>(<span class="params">p</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">str</span>(<span class="built_in">round</span>(p * <span class="number">100</span>)) + <span class="string">&#x27;%&#x27;</span></span><br><span class="line"></span><br><span class="line">payType_percent = spark.sql(<span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    SELECT storeProvince, payType, (COUNT(*) / pcnt) AS percent</span></span><br><span class="line"><span class="string">    FROM (</span></span><br><span class="line"><span class="string">        SELECT *, COUNT(*) OVER(PARTITION BY storeProvince) AS pcnt FROM pp</span></span><br><span class="line"><span class="string">    ) AS sub </span></span><br><span class="line"><span class="string">    GROUP BY storeProvince, payType, pcnt;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>).select(<span class="string">&#x27;storeProvince&#x27;</span>, <span class="string">&#x27;payType&#x27;</span>, udf_to_percent(<span class="string">&#x27;percent&#x27;</span>))</span><br></pre></td></tr></table></figure>
+
+<h3 id="pandas-udf"><a href="#pandas-udf" class="headerlink" title="pandas udf"></a>pandas udf</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># todo 各个省份的支付类型比例</span></span><br><span class="line"><span class="keyword">from</span> pyspark.sql.functions <span class="keyword">import</span> pandas_udf</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启用Arrow传输</span></span><br><span class="line">spark.conf.<span class="built_in">set</span>(<span class="string">&quot;spark.sql.execution.arrow.pyspark.enabled&quot;</span>, <span class="string">&quot;true&quot;</span>)</span><br><span class="line"></span><br><span class="line">df_joined_top3.select(<span class="string">&#x27;storeProvince&#x27;</span>, <span class="string">&#x27;payType&#x27;</span>).createOrReplaceTempView(<span class="string">&#x27;pp&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">str</span>(<span class="built_in">round</span>(<span class="built_in">float</span>(x) * <span class="number">100</span>)) + <span class="string">&#x27;%&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 pandas udf 需要注意类型转换，再用apply方法转换序列里的每一个元素！</span></span><br><span class="line"><span class="meta">@pandas_udf(<span class="params"><span class="string">&#x27;string&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">udf_to_percent2</span>(<span class="params">p: pd.Series</span>) -&gt; pd.Series:</span><br><span class="line">    p = p.astype(<span class="built_in">str</span>).apply(test)</span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line"></span><br><span class="line">payType_percent = spark.sql(<span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    SELECT storeProvince, payType, (COUNT(*) / pcnt) AS percent</span></span><br><span class="line"><span class="string">    FROM (</span></span><br><span class="line"><span class="string">        SELECT *, COUNT(*) OVER(PARTITION BY storeProvince) AS pcnt FROM pp</span></span><br><span class="line"><span class="string">    ) AS sub </span></span><br><span class="line"><span class="string">    GROUP BY storeProvince, payType, pcnt;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>).select(<span class="string">&#x27;storeProvince&#x27;</span>, <span class="string">&#x27;payType&#x27;</span>, udf_to_percent2(<span class="string">&#x27;percent&#x27;</span>))</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>如果觉得文章写得不错或对您有帮助，请我喝杯柠檬茶吧！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Mr Fu 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Mr Fu
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E6%93%8D%E9%80%9F%E6%9F%A5.html" title="Pyspark学习之基操速查">https://ovo.lol/大数据开发/pyspark学习之基操速查.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spark/" rel="tag"># Spark</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E6%A6%82%E5%BF%B5%E7%AF%87.html" rel="prev" title="Pyspark学习之概念篇">
+      <i class="fa fa-chevron-left"></i> Pyspark学习之概念篇
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Driver%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">Driver初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RDD"><span class="nav-number">2.</span> <span class="nav-text">RDD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B6%E8%A1%8C%E5%8C%96%E5%88%9B%E5%BB%BA"><span class="nav-number">2.1.</span> <span class="nav-text">并行化创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%86%99"><span class="nav-number">2.2.</span> <span class="nav-text">读写</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E4%B8%BArdd"><span class="nav-number">2.2.1.</span> <span class="nav-text">读取为rdd</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99"><span class="nav-number">2.2.2.</span> <span class="nav-text">写</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96"><span class="nav-number">2.3.</span> <span class="nav-text">小文件读取</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dataframe"><span class="nav-number">3.</span> <span class="nav-text">Dataframe</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA"><span class="nav-number">3.1.</span> <span class="nav-text">创建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84%E6%8E%A8%E6%96%AD%E5%88%9B%E5%BB%BA"><span class="nav-number">3.1.1.</span> <span class="nav-text">反射推断创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#StructType%E5%88%9B%E5%BB%BA"><span class="nav-number">3.1.2.</span> <span class="nav-text">StructType创建</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%86%99-1"><span class="nav-number">3.2.</span> <span class="nav-text">读写</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E4%B8%BADataframe"><span class="nav-number">3.2.1.</span> <span class="nav-text">读取为Dataframe</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99-1"><span class="nav-number">3.2.2.</span> <span class="nav-text">写</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.3.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%B8%85%E6%B4%97"><span class="nav-number">3.4.</span> <span class="nav-text">数据清洗</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A9%BA%E5%80%BC%E5%A1%AB%E5%85%85"><span class="nav-number">3.4.1.</span> <span class="nav-text">空值填充</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D%E5%80%BC%E8%BF%87%E6%BB%A4"><span class="nav-number">3.4.2.</span> <span class="nav-text">重复值过滤</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E5%8F%98%E9%87%8F"><span class="nav-number">4.</span> <span class="nav-text">共享变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BF%E6%92%AD%E5%8F%98%E9%87%8F"><span class="nav-number">4.1.</span> <span class="nav-text">广播变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%AF%E5%8A%A0%E5%99%A8"><span class="nav-number">4.2.</span> <span class="nav-text">累加器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">5.</span> <span class="nav-text">持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cache-x2F-Persist"><span class="nav-number">5.1.</span> <span class="nav-text">Cache&#x2F;Persist</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Checkpoint"><span class="nav-number">5.2.</span> <span class="nav-text">Checkpoint</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UDF-%E7%94%A8%E6%88%B7%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0"><span class="nav-number">6.</span> <span class="nav-text">UDF 用户定义函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#spark-udf"><span class="nav-number">6.1.</span> <span class="nav-text">spark udf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pandas-udf"><span class="nav-number">6.2.</span> <span class="nav-text">pandas udf</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Mr Fu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.papwin.com/" title="https:&#x2F;&#x2F;blog.papwin.com&#x2F;" rel="noopener" target="_blank">潘岸平的獨立博客</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr Fu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://ovolol.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://ovo.lol/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91/pyspark%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E6%93%8D%E9%80%9F%E6%9F%A5.html";
+    this.page.identifier = "大数据开发/pyspark学习之基操速查.html";
+    this.page.title = "Pyspark学习之基操速查";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://ovolol.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>
